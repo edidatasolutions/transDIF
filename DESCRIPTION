@@ -1,0 +1,22 @@
+Package: transDIF
+Title: Score Comparability for Translated and Adapted Exams
+Version: 0.1.0
+Authors@R: person("Daniel", "Edi", email = "danieledi2026@gmail.com", role = c("aut", "cre"))
+Description: An adaptation-comparability workflow for small, lower-scoring
+    and unbalanced language groups where standard DIF tools break down.
+    Calibrates the Rasch model in each language group, models between-language
+    difficulty differences with an empirical-Bayes spike-and-slab mixture
+    that jointly performs robust linking, anchor selection and small-sample
+    DIF detection with local false discovery rate control, quantifies whether
+    item-level DIF accumulates into different pass rates, explains DIF by
+    item features to give translators actionable guidance, and drafts a
+    comparability report.
+License: MIT + file LICENSE
+URL: https://github.com/edidatasolutions/transDIF, https://edidatasolutions.github.io/transDIF/
+BugReports: https://github.com/edidatasolutions/transDIF/issues
+Encoding: UTF-8
+Depends: R (>= 4.1)
+Imports: stats
+Suggests: knitr, markdown
+VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.0
