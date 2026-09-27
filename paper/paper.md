@@ -8,10 +8,9 @@ tags:
   - linking
 authors:
   - name: Daniel Edi
-    orcid: 0000-0000-0000-0000   # TODO: your ORCID
     affiliation: 1
 affiliations:
-  - name: TODO affiliation
+  - name: Independent Researcher
     index: 1
 date: 27 September 2026
 bibliography: paper.bib
@@ -44,7 +43,8 @@ effects often run in one direction, so anchors are contaminated
 
 # Validation
 
-TODO: update after the linking-estimator revision. Currently, across 12
+<!-- Update these numbers after the linking-estimator revision. -->
+Across 12
 replications per size, empirical-Bayes detection had the highest power at
 every focal-group size (67% at n = 200 vs 43% for Mantel-Haenszel), and
 shrinkage more than halved the error of DIF estimates for DIF-free items.
@@ -53,6 +53,6 @@ rates exceeded the target at focal-group sizes of 100 or fewer.
 
 # Acknowledgements
 
-TODO.
+Software development and drafting were assisted by Claude (Anthropic). The author designed the methods, reviewed and validated all code and results, and takes full responsibility for the content.
 
 # References
