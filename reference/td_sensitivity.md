@@ -102,19 +102,19 @@ review can settle which items should anchor the scale.
 ``` r
 sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
-sens <- td_sensitivity(dif, cut = 12, B = 100, n_draws = 50, seed = 1)
+sens <- td_sensitivity(dif, cut = 12, B = 50, n_draws = 20, seed = 1)
 sens
 #> <td_sensitivity> verdict: SENSITIVE (tolerance 0.15 logits)
-#> Linkings differ by up to 0.011 logits; 57% of 100 bootstrap modes fall within 0.15 of the estimate (90% interval 0.360 to 0.928)
+#> Linkings differ by up to 0.011 logits; 76% of 50 bootstrap modes fall within 0.15 of the estimate (90% interval 0.451 to 0.815)
 #> 
 #>  assumption shift focal_mean    se n_flagged pass_rate_change change_lower
-#>        mode 0.616     -0.616 0.246         3         0.000737      -0.0793
-#>    purified 0.621     -0.621 0.125         3         0.002383      -0.0632
-#>   all_items 0.610     -0.610 0.123         3        -0.000853      -0.0385
+#>        mode 0.616     -0.616 0.246         3         0.000737      -0.1061
+#>    purified 0.621     -0.621 0.125         3         0.002383      -0.0181
+#>   all_items 0.610     -0.610 0.123         3        -0.000853      -0.0497
 #>  change_upper
-#>        0.0732
-#>        0.0261
-#>        0.0455
+#>        0.0636
+#>        0.0442
+#>        0.0283
 #> 
 #> 2 linking-sensitive item(s):
 #>  item      d flag_mode flag_purified flag_all_items linking_sensitive

@@ -186,19 +186,19 @@ items should anchor the scale.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">400</span>, n_focal <span class="op">=</span> <span class="fl">120</span>, n_items <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dif</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_dif.html">td_dif</a></span><span class="op">(</span><span class="fu"><a href="td_calibrate.html">td_calibrate</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">responses</span>, <span class="va">sim</span><span class="op">$</span><span class="va">group</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sens</span> <span class="op">&lt;-</span> <span class="fu">td_sensitivity</span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">12</span>, B <span class="op">=</span> <span class="fl">100</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sens</span> <span class="op">&lt;-</span> <span class="fu">td_sensitivity</span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">12</span>, B <span class="op">=</span> <span class="fl">50</span>, n_draws <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sens</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;td_sensitivity&gt; verdict: SENSITIVE (tolerance 0.15 logits)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Linkings differ by up to 0.011 logits; 57% of 100 bootstrap modes fall within 0.15 of the estimate (90% interval 0.360 to 0.928)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Linkings differ by up to 0.011 logits; 76% of 50 bootstrap modes fall within 0.15 of the estimate (90% interval 0.451 to 0.815)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  assumption shift focal_mean    se n_flagged pass_rate_change change_lower</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        mode 0.616     -0.616 0.246         3         0.000737      -0.0793</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    purified 0.621     -0.621 0.125         3         0.002383      -0.0632</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   all_items 0.610     -0.610 0.123         3        -0.000853      -0.0385</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        mode 0.616     -0.616 0.246         3         0.000737      -0.1061</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    purified 0.621     -0.621 0.125         3         0.002383      -0.0181</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   all_items 0.610     -0.610 0.123         3        -0.000853      -0.0497</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  change_upper</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.0732</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.0261</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        0.0455</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.0636</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.0442</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.0283</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 linking-sensitive item(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  item      d flag_mode flag_purified flag_all_items linking_sensitive</span>

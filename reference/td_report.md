@@ -58,7 +58,7 @@ sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
 rep <- td_report(dif, td_impact(dif, cut = 12, n_draws = 50, seed = 1),
                  td_features(dif, sim$features), c("English", "French"),
-                 sensitivity = td_sensitivity(dif, cut = 12, B = 100, n_draws = 50, seed = 1))
+                 sensitivity = td_sensitivity(dif, B = 50, seed = 1))
 cat(rep)
 #> # Score comparability: English vs French forms
 #> 
@@ -84,13 +84,13 @@ cat(rep)
 #> - An examinee exactly at the cut is expected to score +0.01 raw points on the translated form (interval -1.01 to +1.40).
 #> 
 #> ## Sensitivity to the linking assumption
-#> - **Sensitive:** the conclusions depend on which items are assumed DIF-free. The linking assumptions differ by up to 0.01 logits, and only 57% of 100 bootstrap re-estimates of the mode fall within 0.15 logits of the estimate. Report the results under each assumption, and let expert item review decide which items anchor the scale.
+#> - **Sensitive:** the conclusions depend on which items are assumed DIF-free. The linking assumptions differ by up to 0.01 logits, and only 64% of 50 bootstrap re-estimates of the mode fall within 0.15 logits of the estimate. Report the results under each assumption, and let expert item review decide which items anchor the scale.
 #> 
-#> | linking assumption | mean ability of the French group | items flagged | pass-rate change |
-#> |---|---|---|---|
-#> | densest item cluster (mode) | -0.62 (SE 0.25) | 3 | +0.1 points (-7.9 to +7.3) |
-#> | iterative purification | -0.62 (SE 0.13) | 3 | +0.2 points (-6.3 to +2.6) |
-#> | all items as anchors | -0.61 (SE 0.12) | 3 | -0.1 points (-3.9 to +4.6) |
+#> | linking assumption | mean ability of the French group | items flagged |
+#> |---|---|---|
+#> | densest item cluster (mode) | -0.62 (SE 0.25) | 3 |
+#> | iterative purification | -0.62 (SE 0.13) | 3 |
+#> | all items as anchors | -0.61 (SE 0.12) | 3 |
 #> 
 #> - Items whose DIF verdict depends on the linking (review these first): Q14, Q16.
 #> 
