@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">transDIF</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,9 +119,43 @@ assume that DIF cancels out. Compare with linking on all items:</p>
 <span><span class="co">#&gt; 4   score_shift_at_cut -1.16064342 -1.99479015 -0.64982880</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="how-much-do-the-conclusions-depend-on-the-linking">How much do the conclusions depend on the linking?<a class="anchor" aria-label="anchor" href="#how-much-do-the-conclusions-depend-on-the-linking"></a>
+</h2>
+<p>Linking assumes that DIF-free items form the largest cluster. When
+many items show DIF, the data may not settle which items are DIF-free.
+<code><a href="../reference/td_sensitivity.html">td_sensitivity()</a></code> shows the results under each linking
+assumption, how stable the mode is, and which items’ DIF verdicts depend
+on the choice:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/td_sensitivity.html">td_sensitivity</a></span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">24</span>, B <span class="op">=</span> <span class="fl">100</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;td_sensitivity&gt; verdict: SENSITIVE (tolerance 0.15 logits)</span></span>
+<span><span class="co">#&gt; Linkings differ by up to 0.144 logits; 77% of 100 bootstrap modes fall within 0.15 of the estimate (90% interval 0.369 to 0.753)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  assumption shift focal_mean     se n_flagged pass_rate_change change_lower</span></span>
+<span><span class="co">#&gt;        mode 0.479     -0.479 0.1163         9         -0.03579      -0.0646</span></span>
+<span><span class="co">#&gt;    purified 0.519     -0.519 0.0964         8         -0.02903      -0.0491</span></span>
+<span><span class="co">#&gt;   all_items 0.623     -0.623 0.0949         3         -0.00459      -0.0197</span></span>
+<span><span class="co">#&gt;  change_upper</span></span>
+<span><span class="co">#&gt;       -0.0188</span></span>
+<span><span class="co">#&gt;       -0.0152</span></span>
+<span><span class="co">#&gt;        0.0155</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 6 linking-sensitive item(s):</span></span>
+<span><span class="co">#&gt;  item     d flag_mode flag_purified flag_all_items linking_sensitive</span></span>
+<span><span class="co">#&gt;   Q03 0.979      TRUE          TRUE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt;   Q15 1.126      TRUE          TRUE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt;   Q29 0.875      TRUE         FALSE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt;   Q30 1.039      TRUE          TRUE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt;   Q31 1.134      TRUE          TRUE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt;   Q36 1.044      TRUE          TRUE          FALSE              TRUE</span></span></code></pre></div>
+<p>A “sensitive” verdict does not say which linking is right. It says
+that a conclusion depends on an assumption the data cannot check, so
+report the alternatives and send the listed items to expert review.</p>
+</div>
+<div class="section level2">
 <h2 id="what-should-translators-look-at">What should translators look at?<a class="anchor" aria-label="anchor" href="#what-should-translators-look-at"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/td_features.html">td_features</a></span><span class="op">(</span><span class="va">dif</span>, <span class="va">sim</span><span class="op">$</span><span class="va">features</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          term    estimate         se          z      p_value</span></span>
 <span><span class="co">#&gt; 1 (Intercept)  0.02073289 0.03984978  0.5202762 6.028711e-01</span></span>
@@ -133,7 +167,7 @@ assume that DIF cancels out. Compare with linking on all items:</p>
 <div class="section level2">
 <h2 id="a-report-to-start-from">A report to start from<a class="anchor" aria-label="anchor" href="#a-report-to-start-from"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/td_report.html">td_report</a></span><span class="op">(</span><span class="va">dif</span>, languages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"English"</span>, <span class="st">"French"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Score comparability: English vs French forms</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -162,7 +196,7 @@ assume that DIF cancels out. Compare with linking on all items:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ## Notes for review</span></span>
 <span><span class="co">#&gt; - Flagged items call for expert review of the translation before any statistical adjustment.</span></span>
-<span><span class="co">#&gt; - Conclusions assume the Rasch model holds in both groups and that most items are DIF-free.</span></span>
+<span><span class="co">#&gt; - Conclusions assume the Rasch model holds in both groups and that DIF-free items form the largest cluster of items; td_sensitivity() shows how much they depend on that assumption.</span></span>
 <span><span class="co">#&gt; - Frame decisions using the fairness chapter of the Standards (AERA, APA, NCME, 2014) and the ITC Guidelines for Translating and Adapting Tests (2nd ed., 2017).</span></span></code></pre></div>
 <p>With focal groups of 100 or fewer, treat flags as candidates for
 expert review: in the package’s validation the false discovery rate

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">transDIF</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,14 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="transdif-development-version">transDIF (development version)<a class="anchor" aria-label="anchor" href="#transdif-development-version"></a></h2>
+<ul><li>New <code><a href="../reference/td_sensitivity.html">td_sensitivity()</a></code>: how comparability conclusions depend on the linking assumption. Reports the ability difference, number of flagged items and pass-rate impact under mode, purified and all-item linking; a parametric bootstrap of the mode’s stability; the items whose DIF verdict depends on the linking; and an overall robust/sensitive verdict. Motivated by the First International Mathematics Study illustration, where pervasive DIF on a short test left the linking unidentified.</li>
+<li>
+<code><a href="../reference/td_report.html">td_report()</a></code> gains a <code>sensitivity</code> argument that adds this analysis to the comparability report.</li>
+<li>
+<code><a href="../reference/td_dif.html">td_dif()</a></code> gains <code>c_fixed</code> and <code>c_se_fixed</code> to fit the DIF model under an analyst-chosen linking.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="transdif-010">transDIF 0.1.0<a class="anchor" aria-label="anchor" href="#transdif-010"></a></h2>
 <ul><li>Initial release.</li>
 <li>Per-group Rasch calibration with relative standard errors (<code><a href="../reference/td_calibrate.html">td_calibrate()</a></code>).</li>
@@ -43,7 +51,8 @@
 <li>Aggregate pass-rate impact with linking and DIF uncertainty (<code><a href="../reference/td_impact.html">td_impact()</a></code>).</li>
 <li>Item-feature meta-regression and a draft comparability report (<code><a href="../reference/td_features.html">td_features()</a></code>, <code><a href="../reference/td_report.html">td_report()</a></code>).</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

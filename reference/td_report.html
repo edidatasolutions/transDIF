@@ -17,7 +17,7 @@ finished validity argument."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">transDIF</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,8 @@ finished validity argument.</p>
 <span>  impact <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  features <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  languages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"source"</span>, <span class="st">"target"</span><span class="op">)</span>,</span>
-<span>  file <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sensitivity <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -87,6 +88,11 @@ finished validity argument.</p>
 <dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
 <dd><p>Optional path to write the Markdown to.</p></dd>
 
+
+<dt id="arg-sensitivity">sensitivity<a class="anchor" aria-label="anchor" href="#arg-sensitivity"></a></dt>
+<dd><p>Optional output of [td_sensitivity()]; adds a section on
+how the conclusions depend on the linking assumption.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -98,7 +104,8 @@ finished validity argument.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">400</span>, n_focal <span class="op">=</span> <span class="fl">120</span>, n_items <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dif</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_dif.html">td_dif</a></span><span class="op">(</span><span class="fu"><a href="td_calibrate.html">td_calibrate</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">responses</span>, <span class="va">sim</span><span class="op">$</span><span class="va">group</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rep</span> <span class="op">&lt;-</span> <span class="fu">td_report</span><span class="op">(</span><span class="va">dif</span>, <span class="fu"><a href="td_impact.html">td_impact</a></span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">12</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                 <span class="fu"><a href="td_features.html">td_features</a></span><span class="op">(</span><span class="va">dif</span>, <span class="va">sim</span><span class="op">$</span><span class="va">features</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"English"</span>, <span class="st">"French"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                 <span class="fu"><a href="td_features.html">td_features</a></span><span class="op">(</span><span class="va">dif</span>, <span class="va">sim</span><span class="op">$</span><span class="va">features</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"English"</span>, <span class="st">"French"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 sensitivity <span class="op">=</span> <span class="fu"><a href="td_sensitivity.html">td_sensitivity</a></span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">12</span>, B <span class="op">=</span> <span class="fl">100</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">rep</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Score comparability: English vs French forms</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -123,6 +130,17 @@ finished validity argument.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> - Expected pass rate of the French group: 22.7% on the translated form vs 22.7% on a DIF-free form; change +0.1 points (90% interval -7.9 to +7.3).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> - An examinee exactly at the cut is expected to score +0.01 raw points on the translated form (interval -1.01 to +1.40).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ## Sensitivity to the linking assumption</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - **Sensitive:** the conclusions depend on which items are assumed DIF-free. The linking assumptions differ by up to 0.01 logits, and only 57% of 100 bootstrap re-estimates of the mode fall within 0.15 logits of the estimate. Report the results under each assumption, and let expert item review decide which items anchor the scale.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | linking assumption | mean ability of the French group | items flagged | pass-rate change |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |---|---|---|---|</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | densest item cluster (mode) | -0.62 (SE 0.25) | 3 | +0.1 points (-7.9 to +7.3) |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | iterative purification | -0.62 (SE 0.13) | 3 | +0.2 points (-6.3 to +2.6) |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | all items as anchors | -0.61 (SE 0.12) | 3 | -0.1 points (-3.9 to +4.6) |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Items whose DIF verdict depends on the linking (review these first): Q14, Q16.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ## What predicts DIF (guidance for translators)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> | feature | DIF per feature (logits) | SE | p |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |---|---|---|---|</span>
@@ -135,7 +153,7 @@ finished validity argument.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ## Notes for review</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> - Flagged items call for expert review of the translation before any statistical adjustment.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - Conclusions assume the Rasch model holds in both groups and that most items are DIF-free.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Conclusions assume the Rasch model holds in both groups and that DIF-free items form the largest cluster of items; td_sensitivity() shows how much they depend on that assumption.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> - Frame decisions using the fairness chapter of the Standards (AERA, APA, NCME, 2014) and the ITC Guidelines for Translating and Adapting Tests (2nd ed., 2017).</span>
 <span class="r-in"><span><span class="co"># To save: td_report(dif, file = file.path(tempdir(), "comparability.md"))</span></span></span>
 </code></pre></div>

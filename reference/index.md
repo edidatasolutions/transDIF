@@ -14,6 +14,9 @@
   : Mantel-Haenszel DIF with purification (conventional baseline)
 - [`td_report()`](https://edidatasolutions.github.io/transDIF/reference/td_report.md)
   : Draft a comparability report
+- [`td_sensitivity()`](https://edidatasolutions.github.io/transDIF/reference/td_sensitivity.md)
+  : Sensitivity of the comparability conclusions to the linking
+  assumption
 - [`td_simulate()`](https://edidatasolutions.github.io/transDIF/reference/td_simulate.md)
   : Simulate a source-language and a translated administration with
   known DIF

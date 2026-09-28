@@ -1,5 +1,23 @@
 # Changelog
 
+## transDIF (development version)
+
+- New
+  [`td_sensitivity()`](https://edidatasolutions.github.io/transDIF/reference/td_sensitivity.md):
+  how comparability conclusions depend on the linking assumption.
+  Reports the ability difference, number of flagged items and pass-rate
+  impact under mode, purified and all-item linking; a parametric
+  bootstrap of the mode’s stability; the items whose DIF verdict depends
+  on the linking; and an overall robust/sensitive verdict. Motivated by
+  the First International Mathematics Study illustration, where
+  pervasive DIF on a short test left the linking unidentified.
+- [`td_report()`](https://edidatasolutions.github.io/transDIF/reference/td_report.md)
+  gains a `sensitivity` argument that adds this analysis to the
+  comparability report.
+- [`td_dif()`](https://edidatasolutions.github.io/transDIF/reference/td_dif.md)
+  gains `c_fixed` and `c_se_fixed` to fit the DIF model under an
+  analyst-chosen linking.
+
 ## transDIF 0.1.0
 
 - Initial release.

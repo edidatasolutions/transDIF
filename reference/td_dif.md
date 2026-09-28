@@ -13,7 +13,9 @@ td_dif(
   tau0 = 0.05,
   anchor_max = 0.2,
   link = c("mode", "mixture"),
-  ambiguity = 0.8
+  ambiguity = 0.8,
+  c_fixed = NULL,
+  c_se_fixed = NA_real_
 )
 ```
 
@@ -45,6 +47,16 @@ td_dif(
 
   Competing-mode density ratio above which the linking is reported as
   ambiguous.
+
+- c_fixed:
+
+  Optional linking shift chosen by the analyst (for example, purified or
+  all-item linking); the DIF model is then fitted given it. Used by
+  \[td_sensitivity()\].
+
+- c_se_fixed:
+
+  Standard error to attach to \`c_fixed\`.
 
 ## Value
 

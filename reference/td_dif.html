@@ -11,7 +11,7 @@ difference) that linking must recover and `delta_i` is the item's DIF."></head><
 
     <a class="navbar-brand me-2" href="../index.html">transDIF</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,9 @@ difference) that linking must recover and `delta_i` is the item's DIF.</p>
 <span>  tau0 <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  anchor_max <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>  link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mode"</span>, <span class="st">"mixture"</span><span class="op">)</span>,</span>
-<span>  ambiguity <span class="op">=</span> <span class="fl">0.8</span></span>
+<span>  ambiguity <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  c_fixed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  c_se_fixed <span class="op">=</span> <span class="cn">NA_real_</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,6 +87,16 @@ reported as anchors.</p></dd>
 <dt id="arg-ambiguity">ambiguity<a class="anchor" aria-label="anchor" href="#arg-ambiguity"></a></dt>
 <dd><p>Competing-mode density ratio above which the linking is
 reported as ambiguous.</p></dd>
+
+
+<dt id="arg-c-fixed">c_fixed<a class="anchor" aria-label="anchor" href="#arg-c-fixed"></a></dt>
+<dd><p>Optional linking shift chosen by the analyst (for example,
+purified or all-item linking); the DIF model is then fitted given it.
+Used by [td_sensitivity()].</p></dd>
+
+
+<dt id="arg-c-se-fixed">c_se_fixed<a class="anchor" aria-label="anchor" href="#arg-c-se-fixed"></a></dt>
+<dd><p>Standard error to attach to `c_fixed`.</p></dd>
 
 </dl></div>
     <div class="section level2">

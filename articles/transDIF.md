@@ -67,6 +67,43 @@ td_impact(dif, cut = 24, n_draws = 100, seed = 1)
 #> 4   score_shift_at_cut -1.16064342 -1.99479015 -0.64982880
 ```
 
+## How much do the conclusions depend on the linking?
+
+Linking assumes that DIF-free items form the largest cluster. When many
+items show DIF, the data may not settle which items are DIF-free.
+[`td_sensitivity()`](https://edidatasolutions.github.io/transDIF/reference/td_sensitivity.md)
+shows the results under each linking assumption, how stable the mode is,
+and which items’ DIF verdicts depend on the choice:
+
+``` r
+
+td_sensitivity(dif, cut = 24, B = 100, n_draws = 50, seed = 1)
+#> <td_sensitivity> verdict: SENSITIVE (tolerance 0.15 logits)
+#> Linkings differ by up to 0.144 logits; 77% of 100 bootstrap modes fall within 0.15 of the estimate (90% interval 0.369 to 0.753)
+#> 
+#>  assumption shift focal_mean     se n_flagged pass_rate_change change_lower
+#>        mode 0.479     -0.479 0.1163         9         -0.03579      -0.0646
+#>    purified 0.519     -0.519 0.0964         8         -0.02903      -0.0491
+#>   all_items 0.623     -0.623 0.0949         3         -0.00459      -0.0197
+#>  change_upper
+#>       -0.0188
+#>       -0.0152
+#>        0.0155
+#> 
+#> 6 linking-sensitive item(s):
+#>  item     d flag_mode flag_purified flag_all_items linking_sensitive
+#>   Q03 0.979      TRUE          TRUE          FALSE              TRUE
+#>   Q15 1.126      TRUE          TRUE          FALSE              TRUE
+#>   Q29 0.875      TRUE         FALSE          FALSE              TRUE
+#>   Q30 1.039      TRUE          TRUE          FALSE              TRUE
+#>   Q31 1.134      TRUE          TRUE          FALSE              TRUE
+#>   Q36 1.044      TRUE          TRUE          FALSE              TRUE
+```
+
+A “sensitive” verdict does not say which linking is right. It says that
+a conclusion depends on an assumption the data cannot check, so report
+the alternatives and send the listed items to expert review.
+
 ## What should translators look at?
 
 ``` r
@@ -112,7 +149,7 @@ cat(td_report(dif, languages = c("English", "French")))
 #> 
 #> ## Notes for review
 #> - Flagged items call for expert review of the translation before any statistical adjustment.
-#> - Conclusions assume the Rasch model holds in both groups and that most items are DIF-free.
+#> - Conclusions assume the Rasch model holds in both groups and that DIF-free items form the largest cluster of items; td_sensitivity() shows how much they depend on that assumption.
 #> - Frame decisions using the fairness chapter of the Standards (AERA, APA, NCME, 2014) and the ITC Guidelines for Translating and Adapting Tests (2nd ed., 2017).
 ```
 

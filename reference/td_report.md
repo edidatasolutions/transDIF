@@ -15,7 +15,8 @@ td_report(
   impact = NULL,
   features = NULL,
   languages = c("source", "target"),
-  file = NULL
+  file = NULL,
+  sensitivity = NULL
 )
 ```
 
@@ -41,6 +42,11 @@ td_report(
 
   Optional path to write the Markdown to.
 
+- sensitivity:
+
+  Optional output of \[td_sensitivity()\]; adds a section on how the
+  conclusions depend on the linking assumption.
+
 ## Value
 
 The report as a character string (invisibly if written to file).
@@ -51,7 +57,8 @@ The report as a character string (invisibly if written to file).
 sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
 rep <- td_report(dif, td_impact(dif, cut = 12, n_draws = 50, seed = 1),
-                 td_features(dif, sim$features), c("English", "French"))
+                 td_features(dif, sim$features), c("English", "French"),
+                 sensitivity = td_sensitivity(dif, cut = 12, B = 100, n_draws = 50, seed = 1))
 cat(rep)
 #> # Score comparability: English vs French forms
 #> 
@@ -76,6 +83,17 @@ cat(rep)
 #> - Expected pass rate of the French group: 22.7% on the translated form vs 22.7% on a DIF-free form; change +0.1 points (90% interval -7.9 to +7.3).
 #> - An examinee exactly at the cut is expected to score +0.01 raw points on the translated form (interval -1.01 to +1.40).
 #> 
+#> ## Sensitivity to the linking assumption
+#> - **Sensitive:** the conclusions depend on which items are assumed DIF-free. The linking assumptions differ by up to 0.01 logits, and only 57% of 100 bootstrap re-estimates of the mode fall within 0.15 logits of the estimate. Report the results under each assumption, and let expert item review decide which items anchor the scale.
+#> 
+#> | linking assumption | mean ability of the French group | items flagged | pass-rate change |
+#> |---|---|---|---|
+#> | densest item cluster (mode) | -0.62 (SE 0.25) | 3 | +0.1 points (-7.9 to +7.3) |
+#> | iterative purification | -0.62 (SE 0.13) | 3 | +0.2 points (-6.3 to +2.6) |
+#> | all items as anchors | -0.61 (SE 0.12) | 3 | -0.1 points (-3.9 to +4.6) |
+#> 
+#> - Items whose DIF verdict depends on the linking (review these first): Q14, Q16.
+#> 
 #> ## What predicts DIF (guidance for translators)
 #> | feature | DIF per feature (logits) | SE | p |
 #> |---|---|---|---|
@@ -88,7 +106,7 @@ cat(rep)
 #> 
 #> ## Notes for review
 #> - Flagged items call for expert review of the translation before any statistical adjustment.
-#> - Conclusions assume the Rasch model holds in both groups and that most items are DIF-free.
+#> - Conclusions assume the Rasch model holds in both groups and that DIF-free items form the largest cluster of items; td_sensitivity() shows how much they depend on that assumption.
 #> - Frame decisions using the fairness chapter of the Standards (AERA, APA, NCME, 2014) and the ITC Guidelines for Translating and Adapting Tests (2nd ed., 2017).
 # To save: td_report(dif, file = file.path(tempdir(), "comparability.md"))
 ```
