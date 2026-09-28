@@ -19,7 +19,7 @@ for (nf in c(50, 100, 200)) for (s in seeds) {
   pw <- function(f) mean(f[big]); fd <- function(f) if (any(f)) mean(!tr$dif_item[f]) else 0
   e_eb <- dif$items$dif_mean - tr$dif; e_raw <- it$d - dif$c_purified - tr$dif
   rows[[length(rows) + 1]] <- data.frame(n_focal = nf, weak = dif$weakly_identified,
-    err_c_mixture = dif$link[["c"]] - c_true, err_c_mean = dif$c_mean - c_true,
+    err_c_mode = dif$link[["c"]] - c_true, err_c_mean = dif$c_mean - c_true,
     err_c_purified = dif$c_purified - c_true,
     c_covered = abs(dif$link[["c"]] - c_true) < 1.645 * dif$link[["c_se"]],
     power_eb = pw(dif$items$flag), fdp_eb = fd(dif$items$flag),
@@ -30,16 +30,16 @@ for (nf in c(50, 100, 200)) for (s in seeds) {
 }
 r <- do.call(rbind, rows)
 cat("Linking shift c (true 0.5): bias and RMSE\n")
-lk <- r[c("n_focal", "err_c_mixture", "err_c_mean", "err_c_purified")]
+lk <- r[c("n_focal", "err_c_mode", "err_c_mean", "err_c_purified")]
 b <- stats::aggregate(. ~ n_focal, lk, mean); m <- stats::aggregate(. ~ n_focal, lk, function(v) sqrt(mean(v^2)))
 names(b)[-1] <- paste0("bias_", sub("err_c_", "", names(b)[-1]))
 names(m)[-1] <- paste0("rmse_", sub("err_c_", "", names(m)[-1]))
 print(merge(b, m), digits = 3, row.names = FALSE)
-cat("\nMixture linking SE: 90% interval coverage", round(mean(r$c_covered), 3), "\n")
-cat("\nWeakly identified fits (pi0 at the 0.5 bound), share by n_focal:\n")
+cat("\nMode linking SE: 90% interval coverage", round(mean(r$c_covered), 3), "\n")
+cat("\nAmbiguous-linking warnings, share by n_focal:\n")
 print(stats::aggregate(weak ~ n_focal, r, mean), digits = 3, row.names = FALSE)
 cat("Linking RMSE excluding weakly identified fits:\n")
-ok <- r[!r$weak, c("n_focal", "err_c_mixture", "err_c_mean", "err_c_purified")]
+ok <- r[!r$weak, c("n_focal", "err_c_mode", "err_c_mean", "err_c_purified")]
 print(stats::aggregate(. ~ n_focal, ok, function(v) sqrt(mean(v^2))), digits = 3, row.names = FALSE)
 cat("\nDIF detection (DIF > 0.2 logits), target FDR 10%:\n")
 print(stats::aggregate(cbind(power_eb, fdp_eb, power_purified_z, fdp_purified_z, power_mh, fdp_mh) ~ n_focal,

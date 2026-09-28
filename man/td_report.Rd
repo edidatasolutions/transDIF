@@ -35,9 +35,9 @@ chapter) and the ITC Guidelines for Translating and Adapting Tests (2nd ed.,
 finished validity argument.
 }
 \examples{
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
-rep <- td_report(dif, td_impact(dif, cut = 18, n_draws = 50, seed = 1),
+rep <- td_report(dif, td_impact(dif, cut = 12, n_draws = 50, seed = 1),
                  td_features(dif, sim$features), c("English", "French"))
 cat(rep)
 # To save: td_report(dif, file = file.path(tempdir(), "comparability.md"))

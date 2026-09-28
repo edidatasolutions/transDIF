@@ -34,9 +34,9 @@ pass_rate <- function(b, cut, mean, sd, nodes) {
 #' @return A data frame with estimate and interval for `pass_rate_fair`,
 #'   `pass_rate_translated`, `pass_rate_change` and `score_shift_at_cut`.
 #' @examples
-#' sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+#' sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 #' dif <- td_dif(td_calibrate(sim$responses, sim$group))
-#' td_impact(dif, cut = 18, n_draws = 50, seed = 1)
+#' td_impact(dif, cut = 12, n_draws = 50, seed = 1)
 #' @export
 td_impact <- function(dif, cut, n_draws = 200, level = 0.9, seed = NULL) {
   if (!is.null(seed)) set.seed(seed)
@@ -94,7 +94,7 @@ td_impact <- function(dif, cut, n_draws = 200, level = 0.9, seed = NULL) {
 #'   `p_value`) with attribute `tau` (residual DIF SD). Features with no
 #'   variation across items are dropped with a warning.
 #' @examples
-#' sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+#' sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 #' dif <- td_dif(td_calibrate(sim$responses, sim$group))
 #' td_features(dif, sim$features)
 #' @export
@@ -147,9 +147,9 @@ td_features <- function(dif, features) {
 #' @param file Optional path to write the Markdown to.
 #' @return The report as a character string (invisibly if written to file).
 #' @examples
-#' sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+#' sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 #' dif <- td_dif(td_calibrate(sim$responses, sim$group))
-#' rep <- td_report(dif, td_impact(dif, cut = 18, n_draws = 50, seed = 1),
+#' rep <- td_report(dif, td_impact(dif, cut = 12, n_draws = 50, seed = 1),
 #'                  td_features(dif, sim$features), c("English", "French"))
 #' cat(rep)
 #' # To save: td_report(dif, file = file.path(tempdir(), "comparability.md"))
@@ -167,12 +167,12 @@ td_report <- function(dif, impact = NULL, features = NULL,
     "", "## Linking and anchors",
     sprintf("- The %s group's mean ability is estimated at %.2f logits relative to the %s group (SE %.2f).",
             languages[2], -l[["c"]], languages[1], l[["c_se"]]),
-    sprintf("- This estimate relies on a majority of items being free of DIF (estimated DIF-free share: %s), not on DIF cancelling out. Linking with all items as anchors would have given %.2f.",
+    sprintf("- This estimate relies on DIF-free items forming the largest cluster of items (estimated DIF-free share: %s), not on DIF cancelling out. Linking with all items as anchors would have given %.2f.",
             pct(l[["pi0"]]), -dif$c_mean),
     sprintf("- %d items qualify as clean anchors (posterior DIF probability below 0.2).", sum(it$anchor)),
     if (isTRUE(dif$weakly_identified))
-      sprintf("- **Caution:** the DIF-free share is at its identification bound, so the linking is weakly identified. Purified linking gives %.2f; resolve the discrepancy with expert item review before relying on these results.",
-              -dif$c_purified),
+      sprintf("- **Caution:** a second cluster of items, implying a mean ability of %.2f, is %.0f%% as dense as the chosen one, so the linking is ambiguous. Review items in both clusters with translation experts before relying on these results.",
+              -l[["alt_c"]], 100 * l[["alt_ratio"]]),
     "", "## Item-level DIF",
     sprintf("- %d of %d items are flagged (Bayesian false discovery rate %s).", nrow(fl), nrow(it), pct(dif$fdr)))
   if (nrow(fl)) {

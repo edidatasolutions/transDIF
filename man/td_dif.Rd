@@ -2,12 +2,19 @@
 % Please edit documentation in R/dif.R
 \name{td_dif}
 \alias{td_dif}
-\title{Robust linking, anchor selection and small-sample DIF in one model}
+\title{Robust linking, anchor selection and small-sample DIF}
 \usage{
-td_dif(calibration, fdr = 0.1, tau0 = 0.05, anchor_max = 0.2)
+td_dif(
+  calibration,
+  fdr = 0.1,
+  tau0 = 0.05,
+  anchor_max = 0.2,
+  link = c("mode", "mixture"),
+  ambiguity = 0.8
+)
 }
 \arguments{
-\item{calibration}{An `td_calibration`.}
+\item{calibration}{A `td_calibration`.}
 
 \item{fdr}{Target Bayesian false discovery rate for flagging.}
 
@@ -16,36 +23,47 @@ negligible (logits).}
 
 \item{anchor_max}{Items with posterior DIF probability below this are
 reported as anchors.}
+
+\item{link}{`"mode"` (default) or `"mixture"`.}
+
+\item{ambiguity}{Competing-mode density ratio above which the linking is
+reported as ambiguous.}
 }
 \value{
-An `td_dif` object: `$items` (`item`, `d`, `se_d`, `p_dif`, `lfdr`,
-  `dif_mean`, `dif_sd` (posterior mean/SD of DIF), `flag`, `anchor`) and
-  `$link` (`c`, `c_se`, `pi0`, `m1`, `tau0`, `tau1`), baseline linking
-  constants `c_mean` (all items as anchors) and `c_purified`, and
-  `weakly_identified` (TRUE, with a warning, when `pi0` sits at its 0.5
-  bound; in simulation such fits gave the largest linking errors and
-  false-discovery rates, so rely on `c_purified` and expert review then).
+A `td_dif` object: `$items` (`item`, `d`, `se_d`, `p_dif`, `lfdr`,
+  `dif_mean`, `dif_sd` (posterior mean/SD of DIF), `flag`, `anchor`),
+  `$link` (`c`, `c_se`, `pi0`, `m1`, `tau0`, `tau1`, `alt_c`, `alt_ratio`),
+  baseline linking constants `c_mean` (all items as anchors) and
+  `c_purified`, and `weakly_identified` (TRUE, with a warning, when a
+  second item cluster is nearly as dense as the chosen one).
 }
 \description{
 The between-language difference of item `i` is modeled as
-`d_i ~ N(c + delta_i, se_i^2)`, with DIF effects from a spike-and-slab
-mixture:
-\itemize{
-  \item DIF-free (share `pi0`): `delta_i ~ N(0, tau0^2)`, where `tau0` is small;
-  \item DIF (share `1 - pi0`): `delta_i ~ N(m1, tau1^2)`, where `m1` allows the
-    directional DIF typical of translation.
+`d_i ~ N(c + delta_i, se_i^2)`, where `c` is the common shift (the ability
+difference) that linking must recover and `delta_i` is the item's DIF.
 }
-The common shift `c` is the ability difference that linking must recover.
-It is identified by the spike, i.e. by the assumption that a majority of
-items are DIF-free (`pi0 > 0.5`), not by assuming DIF cancels out as mean
-linking does. The spike's SD `tau0` is fixed at a negligible-DIF scale
-rather than estimated. Left free, it can widen to swallow moderate DIF,
-which destabilizes the linking shift. Remaining parameters are estimated by
-marginal ML with several starts. Each item gets a posterior DIF
-probability, a shrunken DIF estimate, and a local false discovery rate.
+\details{
+**Linking.** By default `c` is the precision-weighted *mode* of the `d_i`:
+the center of the densest cluster of items, found by maximizing
+`sum_i phi((d_i - c) / s_i) / s_i` with `s_i^2 = se_i^2 + tau0^2`. It
+assumes that DIF-free items form the largest cluster, not that DIF cancels
+out as mean linking does. In known-truth benchmarks across balanced,
+directional and heavy DIF, it had the lowest overall RMSE of the
+estimators compared (including mean linking, iterative purification,
+median, Tukey biweight, least trimmed squares and the joint mixture below).
+Its SE is a sandwich estimate plus the scales' location variance. If a
+second cluster of items is nearly as dense, the linking is flagged as
+ambiguous and the competing shift is reported.
+
+**DIF.** Given `c`, DIF effects follow a spike-and-slab mixture:
+DIF-free items (share `pi0 > 0.5`) have `delta_i ~ N(0, tau0^2)`, and DIF
+items have `delta_i ~ N(m1, tau1^2)`, where `m1` allows directional DIF.
+Each item gets a posterior DIF probability, a shrunken DIF estimate and a
+local false discovery rate. `link = "mixture"` instead estimates `c` jointly
+in the mixture (the approach of version 0.1.0; kept for comparison).
 }
 \examples{
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
 dif
 # true linking shift is -focal_mean = 0.5

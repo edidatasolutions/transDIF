@@ -62,7 +62,7 @@ rasch_mml <- function(X, grid = seq(-6, 6, by = 0.1), max_iter = 500, tol = 1e-6
 #'   are absolute SEs; `se_d` uses relative SEs, excluding the location
 #'   uncertainty that is common to all items (it belongs to the linking shift).
 #' @examples
-#' sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+#' sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 #' cal <- td_calibrate(sim$responses, sim$group)
 #' head(cal$items)
 #' @export

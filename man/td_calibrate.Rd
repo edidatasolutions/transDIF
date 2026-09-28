@@ -29,7 +29,7 @@ with its own mean-zero ability scale. The between-language difference
 the linking problem [td_dif()] solves.
 }
 \examples{
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 cal <- td_calibrate(sim$responses, sim$group)
 head(cal$items)
 }

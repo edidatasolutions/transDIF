@@ -4,11 +4,15 @@ Version: 0.1.0
 Authors@R: person("Daniel", "Edi", email = "danieledi2026@gmail.com", role = c("aut", "cre", "cph"),
     comment = c(ORCID = "0000-0001-5475-819X"))
 Description: An adaptation-comparability workflow for small, lower-scoring
-    and unbalanced language groups where standard DIF tools break down.
-    Calibrates the Rasch model in each language group, models between-language
-    difficulty differences with an empirical-Bayes spike-and-slab mixture
-    that jointly performs robust linking, anchor selection and small-sample
-    DIF detection with local false discovery rate control, quantifies whether
+    and unbalanced language groups where standard differential item
+    functioning (DIF) tools (Magis, Beland, Tuerlinckx and De Boeck, 2010,
+    <doi:10.3758/BRM.42.3.847>) break down. Calibrates the Rasch model in
+    each language group, links the groups robustly through the densest
+    cluster of items rather than assuming DIF cancels out (on anchor
+    selection see Kopf, Zeileis and Strobl, 2015,
+    <doi:10.1177/0013164414529792>), detects small-sample DIF with an
+    empirical-Bayes spike-and-slab model and local false discovery rates
+    (Efron, 2004, <doi:10.1198/016214504000000089>), quantifies whether
     item-level DIF accumulates into different pass rates, explains DIF by
     item features to give translators actionable guidance, and drafts a
     comparability report.

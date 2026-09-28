@@ -18,7 +18,7 @@
 #'   (`"ref"`/`"focal"`), `$features` (item data frame), `$truth` (`b_ref`,
 #'   `dif`, `focal_mean`, `focal_sd`).
 #' @examples
-#' sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+#' sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 #' table(dif_item = sim$truth$dif_item)
 #' head(sim$features)
 #' @export

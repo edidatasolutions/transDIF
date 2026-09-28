@@ -45,7 +45,7 @@ the case where mean-based linking fails. The focal (translated) group is
 small and lower-scoring on average.
 }
 \examples{
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 table(dif_item = sim$truth$dif_item)
 head(sim$features)
 }

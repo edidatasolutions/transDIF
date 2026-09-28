@@ -25,7 +25,7 @@ Data frame: `item`, `alpha_mh`, `delta_mh` (ETS delta scale),
 Mantel-Haenszel DIF with purification (conventional baseline)
 }
 \examples{
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 mh <- td_mh(sim$responses, sim$group)
 table(flagged = mh$flag, true_dif = sim$truth$dif_item)
 }

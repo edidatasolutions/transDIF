@@ -50,6 +50,21 @@ mh <- td_mh(sim$responses, sim$group)
 stopifnot(nrow(mh) == 40, all(mh$p_value >= 0 & mh$p_value <= 1))
 rep <- td_report(dif, imp, fe, c("English", "French"))
 stopifnot(grepl("French", rep), grepl("Aggregate impact", rep), grepl("translators", rep))
+# Weighted-mode linking: finds the majority cluster, not the mean.
+lm1 <- ns$link_mode(c(rep(0.5, 12), rep(1.3, 5)) + rnorm(17, 0, 0.02), rep(0.15, 17))
+stopifnot(abs(lm1$c - 0.5) < 0.05, lm1$se > 0, lm1$alt_ratio < 0.8)
+# Two equally dense clusters: the linking is flagged as ambiguous.
+amb <- cal
+amb$items$d <- c(rep(0.2, 20), rep(1.2, 20)) + rnorm(40, 0, 0.03)
+amb$items$se_d <- 0.15
+w <- NULL
+dif_amb <- withCallingHandlers(td_dif(amb), warning = function(x) {
+  w <<- conditionMessage(x); invokeRestart("muffleWarning") })
+stopifnot(isTRUE(dif_amb$weakly_identified), grepl("ambiguous", w),
+          grepl("ambiguous", td_report(dif_amb)))
+# The previous joint-mixture linking remains available.
+stopifnot(td_dif(cal, link = "mixture")$method == "mixture")
+
 # A feature on no item is dropped with a warning instead of failing.
 feat0 <- sim$features; feat0$units <- 0
 fe0 <- withCallingHandlers(td_features(dif, feat0),

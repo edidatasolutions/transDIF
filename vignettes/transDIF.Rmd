@@ -36,8 +36,9 @@ dif <- td_dif(cal)
 dif
 ```
 
-The linking shift (the ability difference) is identified by a DIF-free
-majority of items, not by assuming DIF cancels out. Compare with linking on
+The linking shift (the ability difference) is the center of the densest
+cluster of items, not the mean of all items, so it does not assume that DIF
+cancels out. Compare with linking on
 all items:
 
 ```{r}
@@ -63,5 +64,5 @@ cat(td_report(dif, languages = c("English", "French")))
 ```
 
 With focal groups of 100 or fewer, treat flags as candidates for expert
-review: the package's validation shows its false discovery rate can exceed
-the target at those sizes.
+review: in the package's validation the false discovery rate exceeded its
+target at those sizes.

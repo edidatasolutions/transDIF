@@ -25,7 +25,7 @@ of moments. Coefficients are logits of DIF per unit of the feature. That is
 guidance a translation team can act on.
 }
 \examples{
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
 td_features(dif, sim$features)
 }

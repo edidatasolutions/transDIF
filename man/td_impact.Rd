@@ -33,7 +33,7 @@ both the linking uncertainty (the focal group's mean ability is `-c`) and
 the posterior uncertainty of each item's DIF.
 }
 \examples{
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
-td_impact(dif, cut = 18, n_draws = 50, seed = 1)
+td_impact(dif, cut = 12, n_draws = 50, seed = 1)
 }

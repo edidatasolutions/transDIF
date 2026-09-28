@@ -8,69 +8,112 @@ mix_nll <- function(par, d, se) {
   -sum(log(p0 * f0 + (1 - p0) * f1 + 1e-300))
 }
 
-#' Robust linking, anchor selection and small-sample DIF in one model
+# Precision-weighted mode of the item differences: the c maximizing
+# F(c) = sum_i phi((d_i - c) / s_i) / s_i, a strongly redescending
+# M-estimator that locates the densest cluster of items. Returns the mode,
+# its sandwich SE, and the best competing local mode.
+link_mode <- function(d, s) {
+  f <- function(c) sum(stats::dnorm((c - d) / s) / s)
+  g <- seq(min(d) - 0.5, max(d) + 0.5, length.out = 2001)
+  fg <- vapply(g, f, 0)
+  h <- g[2] - g[1]
+  peaks <- which(diff(sign(diff(fg))) == -2) + 1
+  if (!length(peaks)) peaks <- which.max(fg)
+  refine <- function(i) stats::optimize(f, c(g[i] - h, g[i] + h), maximum = TRUE, tol = 1e-10)
+  top <- peaks[order(-fg[peaks])]
+  m <- refine(top[1])
+  c0 <- m$maximum
+  r <- (d - c0) / s
+  psi <- stats::dnorm(r) * r / s^2            # contributions to F'(c)
+  dpsi <- stats::dnorm(r) * (r^2 - 1) / s^3   # contributions to F''(c)
+  alt <- if (length(top) > 1) refine(top[2]) else NULL
+  list(c = c0, se = sqrt(sum(psi^2)) / abs(sum(dpsi)),
+       alt_c = if (is.null(alt)) NA_real_ else alt$maximum,
+       alt_ratio = if (is.null(alt)) 0 else alt$objective / m$objective)
+}
+
+#' Robust linking, anchor selection and small-sample DIF
 #'
 #' The between-language difference of item `i` is modeled as
-#' `d_i ~ N(c + delta_i, se_i^2)`, with DIF effects from a spike-and-slab
-#' mixture:
-#' \itemize{
-#'   \item DIF-free (share `pi0`): `delta_i ~ N(0, tau0^2)`, where `tau0` is small;
-#'   \item DIF (share `1 - pi0`): `delta_i ~ N(m1, tau1^2)`, where `m1` allows the
-#'     directional DIF typical of translation.
-#' }
-#' The common shift `c` is the ability difference that linking must recover.
-#' It is identified by the spike, i.e. by the assumption that a majority of
-#' items are DIF-free (`pi0 > 0.5`), not by assuming DIF cancels out as mean
-#' linking does. The spike's SD `tau0` is fixed at a negligible-DIF scale
-#' rather than estimated. Left free, it can widen to swallow moderate DIF,
-#' which destabilizes the linking shift. Remaining parameters are estimated by
-#' marginal ML with several starts. Each item gets a posterior DIF
-#' probability, a shrunken DIF estimate, and a local false discovery rate.
+#' `d_i ~ N(c + delta_i, se_i^2)`, where `c` is the common shift (the ability
+#' difference) that linking must recover and `delta_i` is the item's DIF.
 #'
-#' @param calibration An `td_calibration`.
+#' **Linking.** By default `c` is the precision-weighted *mode* of the `d_i`:
+#' the center of the densest cluster of items, found by maximizing
+#' `sum_i phi((d_i - c) / s_i) / s_i` with `s_i^2 = se_i^2 + tau0^2`. It
+#' assumes that DIF-free items form the largest cluster, not that DIF cancels
+#' out as mean linking does. In known-truth benchmarks across balanced,
+#' directional and heavy DIF, it had the lowest overall RMSE of the
+#' estimators compared (including mean linking, iterative purification,
+#' median, Tukey biweight, least trimmed squares and the joint mixture below).
+#' Its SE is a sandwich estimate plus the scales' location variance. If a
+#' second cluster of items is nearly as dense, the linking is flagged as
+#' ambiguous and the competing shift is reported.
+#'
+#' **DIF.** Given `c`, DIF effects follow a spike-and-slab mixture:
+#' DIF-free items (share `pi0 > 0.5`) have `delta_i ~ N(0, tau0^2)`, and DIF
+#' items have `delta_i ~ N(m1, tau1^2)`, where `m1` allows directional DIF.
+#' Each item gets a posterior DIF probability, a shrunken DIF estimate and a
+#' local false discovery rate. `link = "mixture"` instead estimates `c` jointly
+#' in the mixture (the approach of version 0.1.0; kept for comparison).
+#'
+#' @param calibration A `td_calibration`.
 #' @param fdr Target Bayesian false discovery rate for flagging.
 #' @param tau0 SD of DIF among "DIF-free" items: the scale of DIF considered
 #'   negligible (logits).
 #' @param anchor_max Items with posterior DIF probability below this are
 #'   reported as anchors.
-#' @return An `td_dif` object: `$items` (`item`, `d`, `se_d`, `p_dif`, `lfdr`,
-#'   `dif_mean`, `dif_sd` (posterior mean/SD of DIF), `flag`, `anchor`) and
-#'   `$link` (`c`, `c_se`, `pi0`, `m1`, `tau0`, `tau1`), baseline linking
-#'   constants `c_mean` (all items as anchors) and `c_purified`, and
-#'   `weakly_identified` (TRUE, with a warning, when `pi0` sits at its 0.5
-#'   bound; in simulation such fits gave the largest linking errors and
-#'   false-discovery rates, so rely on `c_purified` and expert review then).
+#' @param link `"mode"` (default) or `"mixture"`.
+#' @param ambiguity Competing-mode density ratio above which the linking is
+#'   reported as ambiguous.
+#' @return A `td_dif` object: `$items` (`item`, `d`, `se_d`, `p_dif`, `lfdr`,
+#'   `dif_mean`, `dif_sd` (posterior mean/SD of DIF), `flag`, `anchor`),
+#'   `$link` (`c`, `c_se`, `pi0`, `m1`, `tau0`, `tau1`, `alt_c`, `alt_ratio`),
+#'   baseline linking constants `c_mean` (all items as anchors) and
+#'   `c_purified`, and `weakly_identified` (TRUE, with a warning, when a
+#'   second item cluster is nearly as dense as the chosen one).
 #' @examples
-#' sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+#' sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 #' dif <- td_dif(td_calibrate(sim$responses, sim$group))
 #' dif
 #' # true linking shift is -focal_mean = 0.5
 #' c(estimate = dif$link[["c"]], mean_linking = dif$c_mean)
 #' @export
-td_dif <- function(calibration, fdr = 0.1, tau0 = 0.05, anchor_max = 0.2) {
+td_dif <- function(calibration, fdr = 0.1, tau0 = 0.05, anchor_max = 0.2,
+                   link = c("mode", "mixture"), ambiguity = 0.8) {
+  link <- match.arg(link)
   it <- calibration$items
   d <- it$d; se <- it$se_d
-  # Free parameters q = (c, m1, log(tau1 - tau0), logit of (2 pi0 - 1)):
-  # pi0 > 0.5 and tau1 > tau0 hold by construction.
-  wrap <- function(q) c(q[1], q[2], log(tau0), log(tau0 + exp(q[3])),
-                        stats::qlogis(0.5 + 0.5 * stats::plogis(q[4])))
-  # The likelihood can be multimodal in c when SEs are large (small focal
-  # groups), so start from a grid of c values across the bulk of d.
-  cs <- stats::quantile(d, seq(0.2, 0.8, by = 0.1), names = FALSE)
-  starts <- c(lapply(cs, function(c0) c(c0, 0.5, log(0.4), 0.5)),
-              lapply(cs, function(c0) c(c0, -0.5, log(0.4), 0.5)))
-  best <- NULL
-  for (s in starts) {
-    o <- tryCatch(stats::optim(s, function(q) mix_nll(wrap(q), d, se),
-                               method = "BFGS", hessian = TRUE, control = list(maxit = 1000)),
-                  error = function(e) NULL)
-    if (!is.null(o) && (is.null(best) || o$value < best$value)) best <- o
+  lm <- link_mode(d, sqrt(se^2 + tau0^2))
+  pi0_q <- function(q) stats::qlogis(0.5 + 0.5 * stats::plogis(q))  # keeps pi0 > 0.5
+  fit_best <- function(starts, obj) {
+    best <- NULL
+    for (s in starts) {
+      o <- tryCatch(stats::optim(s, obj, method = "BFGS", hessian = TRUE,
+                                 control = list(maxit = 1000)), error = function(e) NULL)
+      if (!is.null(o) && (is.null(best) || o$value < best$value)) best <- o
+    }
+    best
+  }
+  if (link == "mode") {
+    # Mixture for DIF given the linking shift: q = (m1, log(tau1 - tau0), pi0 logit).
+    c0 <- lm$c
+    wrap <- function(q) c(c0, q[1], log(tau0), log(tau0 + exp(q[2])), pi0_q(q[3]))
+    best <- fit_best(list(c(0.5, log(0.4), 0.5), c(-0.5, log(0.4), 0.5), c(0, log(0.8), 1.5)),
+                     function(q) mix_nll(wrap(q), d, se))
+    c_se <- sqrt(lm$se^2 + calibration$loc_var)
+  } else {
+    # Joint mixture: q = (c, m1, log(tau1 - tau0), pi0 logit).
+    wrap <- function(q) c(q[1], q[2], log(tau0), log(tau0 + exp(q[3])), pi0_q(q[4]))
+    cs <- stats::quantile(d, seq(0.2, 0.8, by = 0.1), names = FALSE)
+    best <- fit_best(c(lapply(cs, function(c0) c(c0, 0.5, log(0.4), 0.5)),
+                       lapply(cs, function(c0) c(c0, -0.5, log(0.4), 0.5))),
+                     function(q) mix_nll(wrap(q), d, se))
+    c_se <- tryCatch(sqrt(solve(best$hessian)[1, 1] + calibration$loc_var),
+                     error = function(e) NA_real_)
   }
   par <- wrap(best$par)
   c0 <- par[1]; m1 <- par[2]; t0 <- exp(par[3]); t1 <- exp(par[4]); p0 <- stats::plogis(par[5])
-  # Linking SE: mixture-estimation uncertainty plus the scales' location variance.
-  c_se <- tryCatch(sqrt(solve(best$hessian)[1, 1] + calibration$loc_var),
-                   error = function(e) NA_real_)
 
   v0 <- se^2 + t0^2; v1 <- se^2 + t1^2
   f0 <- p0 * stats::dnorm(d, c0, sqrt(v0)); f1 <- (1 - p0) * stats::dnorm(d, c0 + m1, sqrt(v1))
@@ -93,19 +136,22 @@ td_dif <- function(calibration, fdr = 0.1, tau0 = 0.05, anchor_max = 0.2) {
     if (identical(new, keep) || sum(new) < 3) break
     keep <- new
   }
-  # pi0 at its lower bound means the data cannot separate a DIF-free majority
-  # from the DIF cluster: the linking shift and flags are then unreliable.
-  weak <- p0 < 0.52
+  # Two item clusters of similar density: the data cannot say which one is
+  # the DIF-free majority, so the linking (and every DIF estimate) is ambiguous.
+  weak <- link == "mode" && lm$alt_ratio >= ambiguity
   if (weak)
-    warning("Estimated DIF-free share is at the 0.5 identification bound: linking is weakly ",
-            "identified. Compare with the purified linking (c_purified = ", round(cp, 3),
-            ") and treat flags with caution.", call. = FALSE)
+    warning(sprintf(paste0("Linking is ambiguous: a second cluster of items at c = %.3f is ",
+                           "%.0f%% as dense as the chosen one (c = %.3f). Review items in both ",
+                           "clusters with translation experts before relying on DIF flags."),
+                    lm$alt_c, 100 * lm$alt_ratio, c0), call. = FALSE)
   structure(list(
     weakly_identified = weak,
     items = data.frame(item = it$item, d = d, se_d = se, p_dif = p_dif, lfdr = lfdr,
                        dif_mean = dif_mean, dif_sd = dif_sd, flag = flag,
                        anchor = p_dif < anchor_max, stringsAsFactors = FALSE),
-    link = c(c = c0, c_se = c_se, pi0 = p0, m1 = m1, tau0 = t0, tau1 = t1),
+    link = c(c = c0, c_se = c_se, pi0 = p0, m1 = m1, tau0 = t0, tau1 = t1,
+             alt_c = lm$alt_c, alt_ratio = lm$alt_ratio),
+    method = link,
     c_mean = stats::weighted.mean(d, 1 / se^2), c_purified = cp,
     fdr = fdr, calibration = calibration), class = "td_dif")
 }
@@ -113,15 +159,15 @@ td_dif <- function(calibration, fdr = 0.1, tau0 = 0.05, anchor_max = 0.2) {
 #' @export
 print.td_dif <- function(x, ...) {
   l <- x$link
-  cat(sprintf("<td_dif> %d items | linking shift c = %.3f (SE %.3f); mean-linking c = %.3f\n",
-              nrow(x$items), l[["c"]], l[["c_se"]], x$c_mean))
+  cat(sprintf("<td_dif> %d items | linking shift c = %.3f (SE %.3f, %s); mean-linking c = %.3f\n",
+              nrow(x$items), l[["c"]], l[["c_se"]], x$method, x$c_mean))
   cat(sprintf("estimated DIF-free share %.2f; DIF component mean %+.2f, SD %.2f\n",
               l[["pi0"]], l[["m1"]], l[["tau1"]]))
   cat(sum(x$items$flag), "items flagged at Bayesian FDR", x$fdr, "|", sum(x$items$anchor),
       "clean anchors\n")
   if (isTRUE(x$weakly_identified))
-    cat(sprintf("WARNING: weakly identified (DIF-free share at the 0.5 bound); purified linking c = %.3f\n",
-                x$c_purified))
+    cat(sprintf("WARNING: ambiguous linking; a second item cluster at c = %.3f is %.0f%% as dense\n",
+                l[["alt_c"]], 100 * l[["alt_ratio"]]))
   cat("\n")
   f <- x$items[x$items$flag, c("item", "d", "p_dif", "dif_mean", "dif_sd")]
   if (nrow(f)) print(f[order(-abs(f$dif_mean)), ], digits = 3, row.names = FALSE)
@@ -138,7 +184,7 @@ print.td_dif <- function(x, ...) {
 #' @return Data frame: `item`, `alpha_mh`, `delta_mh` (ETS delta scale),
 #'   `p_value`, `flag`.
 #' @examples
-#' sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+#' sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 #' mh <- td_mh(sim$responses, sim$group)
 #' table(flagged = mh$flag, true_dif = sim$truth$dif_item)
 #' @export
