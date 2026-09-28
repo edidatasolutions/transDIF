@@ -77,6 +77,6 @@ items should anchor the scale.
 \examples{
 sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
-sens <- td_sensitivity(dif, cut = 12, B = 100, n_draws = 50, seed = 1)
+sens <- td_sensitivity(dif, cut = 12, B = 50, n_draws = 20, seed = 1)
 sens
 }
