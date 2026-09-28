@@ -38,7 +38,7 @@ dif <- td_dif(td_calibrate(sim$responses, sim$group))
 td_features(dif, sim$features)
 #> Warning: Dropped features with no variation across items: cultural
 #>          term    estimate         se         z      p_value
-#> 1 (Intercept)  0.07199662 0.04790904  1.502777 0.1328964354
+#> 1 (Intercept)  0.07199662 0.04790904  1.502777 0.1328964353
 #> 2       idiom  0.46293011 0.13424269  3.448457 0.0005637999
 #> 3       units -0.52785107 0.26708321 -1.976354 0.0481146561
 #> 4  vocabulary  0.52380450 0.14733150  3.555278 0.0003775792
