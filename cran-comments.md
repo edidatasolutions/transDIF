@@ -14,8 +14,9 @@ This is the first submission of transDIF.
 
 * This is a new release.
 * Words flagged as possibly misspelled are author names of cited references
-  (Beland, De Boeck, Efron) and the standard abbreviation DIF (differential
-  item functioning).
+  (Magis, Beland, Tuerlinckx, De Boeck, Kopf, Zeileis, Strobl, Efron), the
+  Rasch model, and the standard abbreviation DIF (differential item
+  functioning).
 
 ## Notes for the reviewer
 
