@@ -110,3 +110,9 @@ Done: `td_simulate`, `td_calibrate`, `td_dif`, `td_mh`, `td_impact`,
 `td_features`, `td_report`. Next: a conservative FDR mode for focal groups
 of 100 or fewer, uniform vs non-uniform DIF (2PL), polytomous items, and
 validation on real French–English data.
+
+## Getting help and contributing
+
+Questions and bug reports: https://github.com/edidatasolutions/transDIF/issues. See
+[CONTRIBUTING.md](.github/CONTRIBUTING.md) for how to report problems, get
+help, or contribute code.
