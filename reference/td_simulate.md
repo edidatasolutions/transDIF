@@ -62,17 +62,17 @@ An \`td_sim\`: \`\$responses\` (0/1 matrix, persons x items),
 ## Examples
 
 ``` r
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 table(dif_item = sim$truth$dif_item)
 #> dif_item
 #> FALSE  TRUE 
-#>    23     7 
+#>     8    12 
 head(sim$features)
 #>     item idiom cultural units vocabulary
 #> Q01  Q01     0        0     0          0
 #> Q02  Q02     0        0     0          0
-#> Q03  Q03     0        0     0          0
-#> Q04  Q04     1        0     0          0
-#> Q05  Q05     0        0     0          0
-#> Q06  Q06     0        0     0          0
+#> Q03  Q03     1        0     0          0
+#> Q04  Q04     0        0     0          1
+#> Q05  Q05     0        0     1          1
+#> Q06  Q06     0        0     0          1
 ```

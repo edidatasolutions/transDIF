@@ -83,16 +83,16 @@ the linking problem [td_dif()] solves.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">600</span>, n_focal <span class="op">=</span> <span class="fl">150</span>, n_items <span class="op">=</span> <span class="fl">30</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">400</span>, n_focal <span class="op">=</span> <span class="fl">120</span>, n_items <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cal</span> <span class="op">&lt;-</span> <span class="fu">td_calibrate</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">responses</span>, <span class="va">sim</span><span class="op">$</span><span class="va">group</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cal</span><span class="op">$</span><span class="va">items</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item      b_ref    se_ref   b_focal  se_focal         d      se_d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Q01 -0.4011790 0.1014853 0.2963397 0.2030587 0.6975187 0.2019547</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Q02  1.4124002 0.1136520 1.7733131 0.2423619 0.3609129 0.2437344</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Q03  1.0146188 0.1072185 2.0444472 0.2576887 1.0298285 0.2553840</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Q04  0.7025781 0.1037696 1.8772952 0.2478715 1.1747171 0.2447616</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Q05  1.5944665 0.1174416 2.1036836 0.2614668 0.5092172 0.2630719</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Q06  0.5285284 0.1024068 0.6719639 0.2071595 0.1434355 0.2060573</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item      b_ref    se_ref    b_focal  se_focal         d      se_d</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Q01 -1.0665941 0.1310266 -0.5185054 0.2178879 0.5480887 0.2295424</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Q02  0.6905033 0.1254879  1.1702381 0.2357935 0.4797349 0.2420547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Q03 -0.5279999 0.1241780  0.3094700 0.2154656 0.8374699 0.2237220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Q04  0.5106732 0.1238554  1.5369165 0.2526025 1.0262433 0.2561443</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Q05 -0.6698039 0.1255101 -0.2390148 0.2147244 0.4307891 0.2239025</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Q06 -0.2651736 0.1225462  0.4696299 0.2174139 0.7348035 0.2245787</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

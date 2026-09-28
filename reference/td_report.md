@@ -48,49 +48,43 @@ The report as a character string (invisibly if written to file).
 ## Examples
 
 ``` r
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
-#> Warning: Estimated DIF-free share is at the 0.5 identification bound: linking is weakly identified. Compare with the purified linking (c_purified = 0.678) and treat flags with caution.
-rep <- td_report(dif, td_impact(dif, cut = 18, n_draws = 50, seed = 1),
+rep <- td_report(dif, td_impact(dif, cut = 12, n_draws = 50, seed = 1),
                  td_features(dif, sim$features), c("English", "French"))
-#> Warning: Dropped features with no variation across items: cultural
 cat(rep)
 #> # Score comparability: English vs French forms
 #> 
 #> ## Samples
-#> - English: 600 examinees; French: 150 examinees.
+#> - English: 400 examinees; French: 120 examinees.
 #> 
 #> ## Linking and anchors
-#> - The French group's mean ability is estimated at -0.46 logits relative to the English group (SE 0.18).
-#> - This estimate relies on a majority of items being free of DIF (estimated DIF-free share: 50.0%), not on DIF cancelling out. Linking with all items as anchors would have given -0.63.
+#> - The French group's mean ability is estimated at -0.62 logits relative to the English group (SE 0.25).
+#> - This estimate relies on DIF-free items forming the largest cluster of items (estimated DIF-free share: 50.0%), not on DIF cancelling out. Linking with all items as anchors would have given -0.61.
 #> - 0 items qualify as clean anchors (posterior DIF probability below 0.2).
-#> - **Caution:** the DIF-free share is at its identification bound, so the linking is weakly identified. Purified linking gives -0.68; resolve the discrepancy with expert item review before relying on these results.
 #> 
 #> ## Item-level DIF
-#> - 7 of 30 items are flagged (Bayesian false discovery rate 10.0%).
+#> - 3 of 20 items are flagged (Bayesian false discovery rate 10.0%).
 #> 
 #> | item | DIF (logits) | posterior SD | P(DIF) | direction |
 #> |---|---|---|---|---|
-#> | Q21 | +0.81 | 0.16 | 1.00 | harder in French |
-#> | Q04 | +0.52 | 0.20 | 0.96 | harder in French |
-#> | Q18 | +0.46 | 0.22 | 0.92 | harder in French |
-#> | Q14 | +0.46 | 0.20 | 0.94 | harder in French |
-#> | Q19 | +0.43 | 0.21 | 0.91 | harder in French |
-#> | Q03 | +0.40 | 0.23 | 0.86 | harder in French |
-#> | Q12 | +0.28 | 0.21 | 0.75 | harder in French |
+#> | Q15 | -0.57 | 0.21 | 0.97 | easier in French |
+#> | Q10 | +0.43 | 0.24 | 0.88 | harder in French |
+#> | Q16 | +0.38 | 0.24 | 0.85 | harder in French |
 #> 
 #> ## Aggregate impact
-#> - Expected pass rate of the French group: 15.7% on the translated form vs 19.7% on a DIF-free form; change -4.1 points (90% interval -10.5 to -0.3).
-#> - An examinee exactly at the cut is expected to score -1.12 raw points on the translated form (interval -2.51 to -0.11).
+#> - Expected pass rate of the French group: 22.7% on the translated form vs 22.7% on a DIF-free form; change +0.1 points (90% interval -7.9 to +7.3).
+#> - An examinee exactly at the cut is expected to score +0.01 raw points on the translated form (interval -1.01 to +1.40).
 #> 
 #> ## What predicts DIF (guidance for translators)
 #> | feature | DIF per feature (logits) | SE | p |
 #> |---|---|---|---|
-#> | vocabulary | +0.52 | 0.15 | 0.000 |
-#> | idiom | +0.46 | 0.13 | 0.001 |
-#> | units | -0.53 | 0.27 | 0.048 |
+#> | units | -0.46 | 0.15 | 0.001 |
+#> | cultural | +0.55 | 0.20 | 0.006 |
+#> | vocabulary | +0.26 | 0.13 | 0.050 |
+#> | idiom | +0.21 | 0.19 | 0.275 |
 #> 
-#> Residual DIF SD not explained by features: 0.09 logits.
+#> Residual DIF SD not explained by features: 0.11 logits.
 #> 
 #> ## Notes for review
 #> - Flagged items call for expert review of the translation before any statistical adjustment.

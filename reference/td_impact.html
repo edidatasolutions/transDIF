@@ -99,15 +99,14 @@ the posterior uncertainty of each item's DIF.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">600</span>, n_focal <span class="op">=</span> <span class="fl">150</span>, n_items <span class="op">=</span> <span class="fl">30</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">400</span>, n_focal <span class="op">=</span> <span class="fl">120</span>, n_items <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dif</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_dif.html">td_dif</a></span><span class="op">(</span><span class="fu"><a href="td_calibrate.html">td_calibrate</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">responses</span>, <span class="va">sim</span><span class="op">$</span><span class="va">group</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Estimated DIF-free share is at the 0.5 identification bound: linking is weakly identified. Compare with the purified linking (c_purified = 0.678) and treat flags with caution.</span>
-<span class="r-in"><span><span class="fu">td_impact</span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">18</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               quantity    estimate      lower        upper</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       pass_rate_fair  0.19739443  0.1252558  0.268786553</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 pass_rate_translated  0.15652298  0.1215504  0.180475798</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     pass_rate_change -0.04087145 -0.1047108 -0.003085834</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   score_shift_at_cut -1.12458683 -2.5090051 -0.113356760</span>
+<span class="r-in"><span><span class="fu">td_impact</span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">12</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               quantity     estimate       lower      upper</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       pass_rate_fair 0.2267433549  0.11089795 0.35274110</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 pass_rate_translated 0.2274804477  0.17208872 0.27368403</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     pass_rate_change 0.0007370928 -0.07930847 0.07321356</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   score_shift_at_cut 0.0129088588 -1.01415063 1.40106100</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

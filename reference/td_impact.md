@@ -48,13 +48,12 @@ A data frame with estimate and interval for \`pass_rate_fair\`,
 ## Examples
 
 ``` r
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
-#> Warning: Estimated DIF-free share is at the 0.5 identification bound: linking is weakly identified. Compare with the purified linking (c_purified = 0.678) and treat flags with caution.
-td_impact(dif, cut = 18, n_draws = 50, seed = 1)
-#>               quantity    estimate      lower        upper
-#> 1       pass_rate_fair  0.19739443  0.1252558  0.268786553
-#> 2 pass_rate_translated  0.15652298  0.1215504  0.180475798
-#> 3     pass_rate_change -0.04087145 -0.1047108 -0.003085834
-#> 4   score_shift_at_cut -1.12458683 -2.5090051 -0.113356760
+td_impact(dif, cut = 12, n_draws = 50, seed = 1)
+#>               quantity     estimate       lower      upper
+#> 1       pass_rate_fair 0.2267433549  0.11089795 0.35274110
+#> 2 pass_rate_translated 0.2274804477  0.17208872 0.27368403
+#> 3     pass_rate_change 0.0007370928 -0.07930847 0.07321356
+#> 4   score_shift_at_cut 0.0129088588 -1.01415063 1.40106100
 ```

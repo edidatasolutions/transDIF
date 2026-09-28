@@ -75,13 +75,13 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">600</span>, n_focal <span class="op">=</span> <span class="fl">150</span>, n_items <span class="op">=</span> <span class="fl">30</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">400</span>, n_focal <span class="op">=</span> <span class="fl">120</span>, n_items <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mh</span> <span class="op">&lt;-</span> <span class="fu">td_mh</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">responses</span>, <span class="va">sim</span><span class="op">$</span><span class="va">group</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>flagged <span class="op">=</span> <span class="va">mh</span><span class="op">$</span><span class="va">flag</span>, true_dif <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">truth</span><span class="op">$</span><span class="va">dif_item</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        true_dif</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> flagged FALSE TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   FALSE    23    6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   TRUE      0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   FALSE     8   10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   TRUE      0    2</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

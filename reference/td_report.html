@@ -95,49 +95,43 @@ finished validity argument.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">600</span>, n_focal <span class="op">=</span> <span class="fl">150</span>, n_items <span class="op">=</span> <span class="fl">30</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">400</span>, n_focal <span class="op">=</span> <span class="fl">120</span>, n_items <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">dif</span> <span class="op">&lt;-</span> <span class="fu"><a href="td_dif.html">td_dif</a></span><span class="op">(</span><span class="fu"><a href="td_calibrate.html">td_calibrate</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">responses</span>, <span class="va">sim</span><span class="op">$</span><span class="va">group</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Estimated DIF-free share is at the 0.5 identification bound: linking is weakly identified. Compare with the purified linking (c_purified = 0.678) and treat flags with caution.</span>
-<span class="r-in"><span><span class="va">rep</span> <span class="op">&lt;-</span> <span class="fu">td_report</span><span class="op">(</span><span class="va">dif</span>, <span class="fu"><a href="td_impact.html">td_impact</a></span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">18</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="va">rep</span> <span class="op">&lt;-</span> <span class="fu">td_report</span><span class="op">(</span><span class="va">dif</span>, <span class="fu"><a href="td_impact.html">td_impact</a></span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">12</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 <span class="fu"><a href="td_features.html">td_features</a></span><span class="op">(</span><span class="va">dif</span>, <span class="va">sim</span><span class="op">$</span><span class="va">features</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"English"</span>, <span class="st">"French"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Dropped features with no variation across items: cultural</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">rep</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Score comparability: English vs French forms</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ## Samples</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - English: 600 examinees; French: 150 examinees.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - English: 400 examinees; French: 120 examinees.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ## Linking and anchors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - The French group's mean ability is estimated at -0.46 logits relative to the English group (SE 0.18).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - This estimate relies on a majority of items being free of DIF (estimated DIF-free share: 50.0%), not on DIF cancelling out. Linking with all items as anchors would have given -0.63.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - The French group's mean ability is estimated at -0.62 logits relative to the English group (SE 0.25).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - This estimate relies on DIF-free items forming the largest cluster of items (estimated DIF-free share: 50.0%), not on DIF cancelling out. Linking with all items as anchors would have given -0.61.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> - 0 items qualify as clean anchors (posterior DIF probability below 0.2).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - **Caution:** the DIF-free share is at its identification bound, so the linking is weakly identified. Purified linking gives -0.68; resolve the discrepancy with expert item review before relying on these results.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ## Item-level DIF</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - 7 of 30 items are flagged (Bayesian false discovery rate 10.0%).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - 3 of 20 items are flagged (Bayesian false discovery rate 10.0%).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> | item | DIF (logits) | posterior SD | P(DIF) | direction |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |---|---|---|---|---|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | Q21 | +0.81 | 0.16 | 1.00 | harder in French |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | Q04 | +0.52 | 0.20 | 0.96 | harder in French |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | Q18 | +0.46 | 0.22 | 0.92 | harder in French |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | Q14 | +0.46 | 0.20 | 0.94 | harder in French |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | Q19 | +0.43 | 0.21 | 0.91 | harder in French |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | Q03 | +0.40 | 0.23 | 0.86 | harder in French |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | Q12 | +0.28 | 0.21 | 0.75 | harder in French |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | Q15 | -0.57 | 0.21 | 0.97 | easier in French |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | Q10 | +0.43 | 0.24 | 0.88 | harder in French |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | Q16 | +0.38 | 0.24 | 0.85 | harder in French |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ## Aggregate impact</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - Expected pass rate of the French group: 15.7% on the translated form vs 19.7% on a DIF-free form; change -4.1 points (90% interval -10.5 to -0.3).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> - An examinee exactly at the cut is expected to score -1.12 raw points on the translated form (interval -2.51 to -0.11).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - Expected pass rate of the French group: 22.7% on the translated form vs 22.7% on a DIF-free form; change +0.1 points (90% interval -7.9 to +7.3).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> - An examinee exactly at the cut is expected to score +0.01 raw points on the translated form (interval -1.01 to +1.40).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ## What predicts DIF (guidance for translators)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> | feature | DIF per feature (logits) | SE | p |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |---|---|---|---|</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | vocabulary | +0.52 | 0.15 | 0.000 |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | idiom | +0.46 | 0.13 | 0.001 |</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | units | -0.53 | 0.27 | 0.048 |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | units | -0.46 | 0.15 | 0.001 |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | cultural | +0.55 | 0.20 | 0.006 |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | vocabulary | +0.26 | 0.13 | 0.050 |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | idiom | +0.21 | 0.19 | 0.275 |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Residual DIF SD not explained by features: 0.09 logits.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Residual DIF SD not explained by features: 0.11 logits.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ## Notes for review</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> - Flagged items call for expert review of the translation before any statistical adjustment.</span>

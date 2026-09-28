@@ -32,14 +32,13 @@ variation across items are dropped with a warning.
 ## Examples
 
 ``` r
-sim <- td_simulate(n_ref = 600, n_focal = 150, n_items = 30, seed = 1)
+sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
-#> Warning: Estimated DIF-free share is at the 0.5 identification bound: linking is weakly identified. Compare with the purified linking (c_purified = 0.678) and treat flags with caution.
 td_features(dif, sim$features)
-#> Warning: Dropped features with no variation across items: cultural
-#>          term    estimate         se         z      p_value
-#> 1 (Intercept)  0.07199662 0.04790904  1.502777 0.1328964353
-#> 2       idiom  0.46293011 0.13424269  3.448457 0.0005637999
-#> 3       units -0.52785107 0.26708321 -1.976354 0.0481146561
-#> 4  vocabulary  0.52380450 0.14733150  3.555278 0.0003775792
+#>          term    estimate         se          z     p_value
+#> 1 (Intercept) -0.05714491 0.08564583 -0.6672235 0.504629368
+#> 2       idiom  0.21161373 0.19391980  1.0912435 0.275165749
+#> 3    cultural  0.54969875 0.20130565  2.7306673 0.006320625
+#> 4       units -0.46375958 0.14599001 -3.1766528 0.001489853
+#> 5  vocabulary  0.25843348 0.13175854  1.9614172 0.049830371
 ```

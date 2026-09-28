@@ -85,39 +85,38 @@ translation.</p>
 <code class="sourceCode R"><span><span class="va">cal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_calibrate.html">td_calibrate</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">responses</span>, <span class="va">sim</span><span class="op">$</span><span class="va">group</span><span class="op">)</span></span>
 <span><span class="va">dif</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_dif.html">td_dif</a></span><span class="op">(</span><span class="va">cal</span><span class="op">)</span></span>
 <span><span class="va">dif</span></span>
-<span><span class="co">#&gt; &lt;td_dif&gt; 40 items | linking shift c = 0.468 (SE 0.106); mean-linking c = 0.623</span></span>
-<span><span class="co">#&gt; estimated DIF-free share 0.69; DIF component mean +0.51, SD 0.05</span></span>
-<span><span class="co">#&gt; 10 items flagged at Bayesian FDR 0.1 | 24 clean anchors</span></span>
+<span><span class="co">#&gt; &lt;td_dif&gt; 40 items | linking shift c = 0.479 (SE 0.116, mode); mean-linking c = 0.623</span></span>
+<span><span class="co">#&gt; estimated DIF-free share 0.70; DIF component mean +0.51, SD 0.05</span></span>
+<span><span class="co">#&gt; 9 items flagged at Bayesian FDR 0.1 | 24 clean anchors</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  item     d p_dif dif_mean dif_sd</span></span>
-<span><span class="co">#&gt;   Q25 1.221 0.996    0.524 0.0572</span></span>
-<span><span class="co">#&gt;   Q13 1.192 0.996    0.524 0.0560</span></span>
-<span><span class="co">#&gt;   Q09 1.167 0.995    0.521 0.0598</span></span>
-<span><span class="co">#&gt;   Q30 1.039 0.969    0.500 0.0962</span></span>
-<span><span class="co">#&gt;   Q15 1.126 0.951    0.494 0.1165</span></span>
-<span><span class="co">#&gt;   Q31 1.134 0.927    0.482 0.1365</span></span>
-<span><span class="co">#&gt;   Q03 0.979 0.935    0.480 0.1270</span></span>
-<span><span class="co">#&gt;   Q36 1.044 0.825    0.428 0.1935</span></span>
-<span><span class="co">#&gt;   Q29 0.875 0.765    0.392 0.2085</span></span>
-<span><span class="co">#&gt;   Q05 0.887 0.649    0.336 0.2388</span></span></code></pre></div>
-<p>The linking shift (the ability difference) is identified by a
-DIF-free majority of items, not by assuming DIF cancels out. Compare
-with linking on all items:</p>
+<span><span class="co">#&gt;   Q25 1.221 0.995    0.522 0.0591</span></span>
+<span><span class="co">#&gt;   Q13 1.192 0.996    0.522 0.0578</span></span>
+<span><span class="co">#&gt;   Q09 1.167 0.993    0.519 0.0623</span></span>
+<span><span class="co">#&gt;   Q30 1.039 0.962    0.495 0.1036</span></span>
+<span><span class="co">#&gt;   Q15 1.126 0.942    0.488 0.1239</span></span>
+<span><span class="co">#&gt;   Q31 1.134 0.916    0.475 0.1443</span></span>
+<span><span class="co">#&gt;   Q03 0.979 0.921    0.472 0.1371</span></span>
+<span><span class="co">#&gt;   Q36 1.044 0.803    0.415 0.2016</span></span>
+<span><span class="co">#&gt;   Q29 0.875 0.727    0.372 0.2182</span></span></code></pre></div>
+<p>The linking shift (the ability difference) is the center of the
+densest cluster of items, not the mean of all items, so it does not
+assume that DIF cancels out. Compare with linking on all items:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>true <span class="op">=</span> <span class="op">-</span><span class="va">sim</span><span class="op">$</span><span class="va">truth</span><span class="op">$</span><span class="va">focal_mean</span>, robust <span class="op">=</span> <span class="va">dif</span><span class="op">$</span><span class="va">link</span><span class="op">[[</span><span class="st">"c"</span><span class="op">]</span><span class="op">]</span>, all_items <span class="op">=</span> <span class="va">dif</span><span class="op">$</span><span class="va">c_mean</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      true    robust all_items </span></span>
-<span><span class="co">#&gt; 0.5000000 0.4681590 0.6228016</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.5000000 0.4791316 0.6228016</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="does-dif-change-pass-rates">Does DIF change pass rates?<a class="anchor" aria-label="anchor" href="#does-dif-change-pass-rates"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/td_impact.html">td_impact</a></span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">24</span>, n_draws <span class="op">=</span> <span class="fl">100</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt;               quantity    estimate       lower      upper</span></span>
-<span><span class="co">#&gt; 1       pass_rate_fair  0.19803351  0.15582883  0.2473419</span></span>
-<span><span class="co">#&gt; 2 pass_rate_translated  0.16016604  0.13306985  0.1822478</span></span>
-<span><span class="co">#&gt; 3     pass_rate_change -0.03786747 -0.06827959 -0.0210953</span></span>
-<span><span class="co">#&gt; 4   score_shift_at_cut -1.22072777 -1.99835140 -0.7624327</span></span></code></pre></div>
+<span><span class="co">#&gt;               quantity    estimate       lower       upper</span></span>
+<span><span class="co">#&gt; 1       pass_rate_fair  0.19513094  0.14950118  0.24928711</span></span>
+<span><span class="co">#&gt; 2 pass_rate_translated  0.15933817  0.12855365  0.18308398</span></span>
+<span><span class="co">#&gt; 3     pass_rate_change -0.03579277 -0.06834324 -0.01838312</span></span>
+<span><span class="co">#&gt; 4   score_shift_at_cut -1.16064342 -1.99479015 -0.64982880</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="what-should-translators-look-at">What should translators look at?<a class="anchor" aria-label="anchor" href="#what-should-translators-look-at"></a>
@@ -125,7 +124,7 @@ with linking on all items:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/td_features.html">td_features</a></span><span class="op">(</span><span class="va">dif</span>, <span class="va">sim</span><span class="op">$</span><span class="va">features</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          term    estimate         se          z      p_value</span></span>
-<span><span class="co">#&gt; 1 (Intercept)  0.03170555 0.03984978  0.7956267 4.262490e-01</span></span>
+<span><span class="co">#&gt; 1 (Intercept)  0.02073289 0.03984978  0.5202762 6.028711e-01</span></span>
 <span><span class="co">#&gt; 2       idiom  0.48388035 0.10197468  4.7451028 2.084004e-06</span></span>
 <span><span class="co">#&gt; 3    cultural  0.51599144 0.08421317  6.1272061 8.943560e-10</span></span>
 <span><span class="co">#&gt; 4       units -0.28103451 0.11066300 -2.5395526 1.109944e-02</span></span>
@@ -142,33 +141,32 @@ with linking on all items:</p>
 <span><span class="co">#&gt; - English: 2000 examinees; French: 150 examinees.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ## Linking and anchors</span></span>
-<span><span class="co">#&gt; - The French group's mean ability is estimated at -0.47 logits relative to the English group (SE 0.11).</span></span>
-<span><span class="co">#&gt; - This estimate relies on a majority of items being free of DIF (estimated DIF-free share: 68.9%), not on DIF cancelling out. Linking with all items as anchors would have given -0.62.</span></span>
+<span><span class="co">#&gt; - The French group's mean ability is estimated at -0.48 logits relative to the English group (SE 0.12).</span></span>
+<span><span class="co">#&gt; - This estimate relies on DIF-free items forming the largest cluster of items (estimated DIF-free share: 70.3%), not on DIF cancelling out. Linking with all items as anchors would have given -0.62.</span></span>
 <span><span class="co">#&gt; - 24 items qualify as clean anchors (posterior DIF probability below 0.2).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ## Item-level DIF</span></span>
-<span><span class="co">#&gt; - 10 of 40 items are flagged (Bayesian false discovery rate 10.0%).</span></span>
+<span><span class="co">#&gt; - 9 of 40 items are flagged (Bayesian false discovery rate 10.0%).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; | item | DIF (logits) | posterior SD | P(DIF) | direction |</span></span>
 <span><span class="co">#&gt; |---|---|---|---|---|</span></span>
 <span><span class="co">#&gt; | Q25 | +0.52 | 0.06 | 1.00 | harder in French |</span></span>
 <span><span class="co">#&gt; | Q13 | +0.52 | 0.06 | 1.00 | harder in French |</span></span>
 <span><span class="co">#&gt; | Q09 | +0.52 | 0.06 | 0.99 | harder in French |</span></span>
-<span><span class="co">#&gt; | Q30 | +0.50 | 0.10 | 0.97 | harder in French |</span></span>
-<span><span class="co">#&gt; | Q15 | +0.49 | 0.12 | 0.95 | harder in French |</span></span>
-<span><span class="co">#&gt; | Q31 | +0.48 | 0.14 | 0.93 | harder in French |</span></span>
-<span><span class="co">#&gt; | Q03 | +0.48 | 0.13 | 0.94 | harder in French |</span></span>
-<span><span class="co">#&gt; | Q36 | +0.43 | 0.19 | 0.83 | harder in French |</span></span>
-<span><span class="co">#&gt; | Q29 | +0.39 | 0.21 | 0.77 | harder in French |</span></span>
-<span><span class="co">#&gt; | Q05 | +0.34 | 0.24 | 0.65 | harder in French |</span></span>
+<span><span class="co">#&gt; | Q30 | +0.50 | 0.10 | 0.96 | harder in French |</span></span>
+<span><span class="co">#&gt; | Q15 | +0.49 | 0.12 | 0.94 | harder in French |</span></span>
+<span><span class="co">#&gt; | Q31 | +0.47 | 0.14 | 0.92 | harder in French |</span></span>
+<span><span class="co">#&gt; | Q03 | +0.47 | 0.14 | 0.92 | harder in French |</span></span>
+<span><span class="co">#&gt; | Q36 | +0.42 | 0.20 | 0.80 | harder in French |</span></span>
+<span><span class="co">#&gt; | Q29 | +0.37 | 0.22 | 0.73 | harder in French |</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ## Notes for review</span></span>
 <span><span class="co">#&gt; - Flagged items call for expert review of the translation before any statistical adjustment.</span></span>
 <span><span class="co">#&gt; - Conclusions assume the Rasch model holds in both groups and that most items are DIF-free.</span></span>
 <span><span class="co">#&gt; - Frame decisions using the fairness chapter of the Standards (AERA, APA, NCME, 2014) and the ITC Guidelines for Translating and Adapting Tests (2nd ed., 2017).</span></span></code></pre></div>
 <p>With focal groups of 100 or fewer, treat flags as candidates for
-expert review: the package’s validation shows its false discovery rate
-can exceed the target at those sizes.</p>
+expert review: in the package’s validation the false discovery rate
+exceeded its target at those sizes.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

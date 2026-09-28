@@ -5,7 +5,7 @@
 - [`td_calibrate()`](https://edidatasolutions.github.io/transDIF/reference/td_calibrate.md)
   : Calibrate each language group separately
 - [`td_dif()`](https://edidatasolutions.github.io/transDIF/reference/td_dif.md)
-  : Robust linking, anchor selection and small-sample DIF in one model
+  : Robust linking, anchor selection and small-sample DIF
 - [`td_features()`](https://edidatasolutions.github.io/transDIF/reference/td_features.md)
   : Which item features predict DIF?
 - [`td_impact()`](https://edidatasolutions.github.io/transDIF/reference/td_impact.md)
