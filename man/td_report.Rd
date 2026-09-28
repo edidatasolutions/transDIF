@@ -9,7 +9,8 @@ td_report(
   impact = NULL,
   features = NULL,
   languages = c("source", "target"),
-  file = NULL
+  file = NULL,
+  sensitivity = NULL
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ td_report(
 \item{languages}{Names of the source and target languages.}
 
 \item{file}{Optional path to write the Markdown to.}
+
+\item{sensitivity}{Optional output of [td_sensitivity()]; adds a section on
+how the conclusions depend on the linking assumption.}
 }
 \value{
 The report as a character string (invisibly if written to file).
@@ -38,7 +42,8 @@ finished validity argument.
 sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 dif <- td_dif(td_calibrate(sim$responses, sim$group))
 rep <- td_report(dif, td_impact(dif, cut = 12, n_draws = 50, seed = 1),
-                 td_features(dif, sim$features), c("English", "French"))
+                 td_features(dif, sim$features), c("English", "French"),
+                 sensitivity = td_sensitivity(dif, cut = 12, B = 100, n_draws = 50, seed = 1))
 cat(rep)
 # To save: td_report(dif, file = file.path(tempdir(), "comparability.md"))
 }

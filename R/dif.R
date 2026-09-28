@@ -66,6 +66,10 @@ link_mode <- function(d, s) {
 #' @param link `"mode"` (default) or `"mixture"`.
 #' @param ambiguity Competing-mode density ratio above which the linking is
 #'   reported as ambiguous.
+#' @param c_fixed Optional linking shift chosen by the analyst (for example,
+#'   purified or all-item linking); the DIF model is then fitted given it.
+#'   Used by [td_sensitivity()].
+#' @param c_se_fixed Standard error to attach to `c_fixed`.
 #' @return A `td_dif` object: `$items` (`item`, `d`, `se_d`, `p_dif`, `lfdr`,
 #'   `dif_mean`, `dif_sd` (posterior mean/SD of DIF), `flag`, `anchor`),
 #'   `$link` (`c`, `c_se`, `pi0`, `m1`, `tau0`, `tau1`, `alt_c`, `alt_ratio`),
@@ -80,11 +84,18 @@ link_mode <- function(d, s) {
 #' c(estimate = dif$link[["c"]], mean_linking = dif$c_mean)
 #' @export
 td_dif <- function(calibration, fdr = 0.1, tau0 = 0.05, anchor_max = 0.2,
-                   link = c("mode", "mixture"), ambiguity = 0.8) {
+                   link = c("mode", "mixture"), ambiguity = 0.8,
+                   c_fixed = NULL, c_se_fixed = NA_real_) {
   link <- match.arg(link)
   it <- calibration$items
   d <- it$d; se <- it$se_d
   lm <- link_mode(d, sqrt(se^2 + tau0^2))
+  if (!is.null(c_fixed)) {
+    # A linking chosen by the analyst (e.g. from td_sensitivity()): fit the DIF
+    # model given that shift; the ambiguity check does not apply.
+    link <- "mode"
+    lm$c <- c_fixed; lm$se <- 0; lm$alt_ratio <- 0
+  }
   pi0_q <- function(q) stats::qlogis(0.5 + 0.5 * stats::plogis(q))  # keeps pi0 > 0.5
   fit_best <- function(starts, obj) {
     best <- NULL
@@ -101,7 +112,7 @@ td_dif <- function(calibration, fdr = 0.1, tau0 = 0.05, anchor_max = 0.2,
     wrap <- function(q) c(c0, q[1], log(tau0), log(tau0 + exp(q[2])), pi0_q(q[3]))
     best <- fit_best(list(c(0.5, log(0.4), 0.5), c(-0.5, log(0.4), 0.5), c(0, log(0.8), 1.5)),
                      function(q) mix_nll(wrap(q), d, se))
-    c_se <- sqrt(lm$se^2 + calibration$loc_var)
+    c_se <- if (!is.null(c_fixed)) c_se_fixed else sqrt(lm$se^2 + calibration$loc_var)
   } else {
     # Joint mixture: q = (c, m1, log(tau1 - tau0), pi0 logit).
     wrap <- function(q) c(q[1], q[2], log(tau0), log(tau0 + exp(q[3])), pi0_q(q[4]))
@@ -151,8 +162,9 @@ td_dif <- function(calibration, fdr = 0.1, tau0 = 0.05, anchor_max = 0.2,
                        anchor = p_dif < anchor_max, stringsAsFactors = FALSE),
     link = c(c = c0, c_se = c_se, pi0 = p0, m1 = m1, tau0 = t0, tau1 = t1,
              alt_c = lm$alt_c, alt_ratio = lm$alt_ratio),
-    method = link,
+    method = if (!is.null(c_fixed)) "fixed" else link,
     c_mean = stats::weighted.mean(d, 1 / se^2), c_purified = cp,
+    purified_items = it$item[keep], tau0 = tau0,
     fdr = fdr, calibration = calibration), class = "td_dif")
 }
 

@@ -51,6 +51,21 @@ c(true = -sim$truth$focal_mean, robust = dif$link[["c"]], all_items = dif$c_mean
 td_impact(dif, cut = 24, n_draws = 100, seed = 1)
 ```
 
+## How much do the conclusions depend on the linking?
+
+Linking assumes that DIF-free items form the largest cluster. When many
+items show DIF, the data may not settle which items are DIF-free.
+`td_sensitivity()` shows the results under each linking assumption, how
+stable the mode is, and which items' DIF verdicts depend on the choice:
+
+```{r}
+td_sensitivity(dif, cut = 24, B = 100, n_draws = 50, seed = 1)
+```
+
+A "sensitive" verdict does not say which linking is right. It says that a
+conclusion depends on an assumption the data cannot check, so report the
+alternatives and send the listed items to expert review.
+
 ## What should translators look at?
 
 ```{r}

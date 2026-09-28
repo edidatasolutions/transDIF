@@ -145,17 +145,20 @@ td_features <- function(dif, features) {
 #' @param features Optional output of [td_features()].
 #' @param languages Names of the source and target languages.
 #' @param file Optional path to write the Markdown to.
+#' @param sensitivity Optional output of [td_sensitivity()]; adds a section on
+#'   how the conclusions depend on the linking assumption.
 #' @return The report as a character string (invisibly if written to file).
 #' @examples
 #' sim <- td_simulate(n_ref = 400, n_focal = 120, n_items = 20, seed = 5)
 #' dif <- td_dif(td_calibrate(sim$responses, sim$group))
 #' rep <- td_report(dif, td_impact(dif, cut = 12, n_draws = 50, seed = 1),
-#'                  td_features(dif, sim$features), c("English", "French"))
+#'                  td_features(dif, sim$features), c("English", "French"),
+#'                  sensitivity = td_sensitivity(dif, B = 50, seed = 1))
 #' cat(rep)
 #' # To save: td_report(dif, file = file.path(tempdir(), "comparability.md"))
 #' @export
 td_report <- function(dif, impact = NULL, features = NULL,
-                      languages = c("source", "target"), file = NULL) {
+                      languages = c("source", "target"), file = NULL, sensitivity = NULL) {
   cal <- dif$calibration; l <- dif$link; it <- dif$items
   fl <- it[it$flag, ]
   fl <- fl[order(-abs(fl$dif_mean)), ]
@@ -191,6 +194,34 @@ td_report <- function(dif, impact = NULL, features = NULL,
       sprintf("- An examinee exactly at the cut is expected to score %+.2f raw points on the translated form (interval %+.2f to %+.2f).",
               sh$estimate, sh$lower, sh$upper))
   }
+  if (!is.null(sensitivity)) {
+    s <- sensitivity; lk <- s$linkings
+    lab <- c(mode = "densest item cluster (mode)", purified = "iterative purification",
+             all_items = "all items as anchors")
+    has_imp <- "pass_rate_change" %in% names(lk)
+    lines <- c(lines, "", "## Sensitivity to the linking assumption",
+      if (s$verdict == "robust")
+        sprintf("- **Robust:** the linking assumptions agree within %.2f logits, and %.0f%% of %d bootstrap re-estimates of the mode fall within %.2f logits of the estimate.",
+                s$range, 100 * s$bootstrap[["share_within"]], s$B, s$tolerance)
+      else
+        sprintf("- **Sensitive:** the conclusions depend on which items are assumed DIF-free. The linking assumptions differ by up to %.2f logits, and only %.0f%% of %d bootstrap re-estimates of the mode fall within %.2f logits of the estimate. Report the results under each assumption, and let expert item review decide which items anchor the scale.",
+                s$range, 100 * s$bootstrap[["share_within"]], s$B, s$tolerance),
+      "",
+      if (has_imp) "| linking assumption | mean ability of the %s group | items flagged | pass-rate change |" else
+        "| linking assumption | mean ability of the %s group | items flagged |",
+      if (has_imp) "|---|---|---|---|" else "|---|---|---|",
+      if (has_imp)
+        sprintf("| %s | %.2f (SE %.2f) | %d | %+.1f points (%+.1f to %+.1f) |", lab[lk$assumption],
+                lk$focal_mean, lk$se, lk$n_flagged, 100 * lk$pass_rate_change,
+                100 * lk$change_lower, 100 * lk$change_upper)
+      else sprintf("| %s | %.2f (SE %.2f) | %d |", lab[lk$assumption], lk$focal_mean, lk$se, lk$n_flagged))
+    lines <- sub("%s group", paste(languages[2], "group"), lines, fixed = TRUE)
+    si <- s$items$item[s$items$linking_sensitive]
+    lines <- c(lines, "",
+      if (length(si))
+        sprintf("- Items whose DIF verdict depends on the linking (review these first): %s.", paste(si, collapse = ", "))
+      else "- No item's DIF verdict depends on the linking assumption.")
+  }
   if (!is.null(features)) {
     fe <- features[features$term != "(Intercept)", ]
     fe <- fe[order(fe$p_value), ]
@@ -201,7 +232,7 @@ td_report <- function(dif, impact = NULL, features = NULL,
   }
   lines <- c(lines, "", "## Notes for review",
     "- Flagged items call for expert review of the translation before any statistical adjustment.",
-    "- Conclusions assume the Rasch model holds in both groups and that most items are DIF-free.",
+    "- Conclusions assume the Rasch model holds in both groups and that DIF-free items form the largest cluster of items; td_sensitivity() shows how much they depend on that assumption.",
     "- Frame decisions using the fairness chapter of the Standards (AERA, APA, NCME, 2014) and the ITC Guidelines for Translating and Adapting Tests (2nd ed., 2017).")
   txt <- paste(lines, collapse = "\n")
   if (!is.null(file)) { writeLines(txt, file); return(invisible(txt)) }

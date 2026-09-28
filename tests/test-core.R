@@ -65,6 +65,21 @@ stopifnot(isTRUE(dif_amb$weakly_identified), grepl("ambiguous", w),
 # The previous joint-mixture linking remains available.
 stopifnot(td_dif(cal, link = "mixture")$method == "mixture")
 
+# Linking sensitivity: clear cluster -> robust; two equal clusters -> sensitive.
+clear <- cal
+set.seed(3)
+clear$items$d <- c(rep(0.5, 34), 0.5 + c(0.6, 0.7, 0.8, -0.6, 0.9, 0.7)) + rnorm(40, 0, 0.02)
+clear$items$se_d <- 0.05
+s_clear <- td_sensitivity(suppressWarnings(td_dif(clear)), B = 100, seed = 1)
+stopifnot(s_clear$verdict == "robust", s_clear$range < 0.15,
+          all(c("mode", "purified", "all_items") %in% s_clear$linkings$assumption))
+s_amb <- td_sensitivity(suppressWarnings(td_dif(amb)), B = 100, seed = 1)
+stopifnot(s_amb$verdict == "sensitive", s_amb$range > 0.15,
+          grepl("Sensitivity to the linking assumption", td_report(dif_amb, sensitivity = s_amb)))
+# With a cut, each linking gets a pass-rate impact.
+s_cut <- td_sensitivity(dif, cut = 24, B = 50, n_draws = 30, seed = 2)
+stopifnot(all(c("pass_rate_change", "change_lower", "change_upper") %in% names(s_cut$linkings)))
+
 # A feature on no item is dropped with a warning instead of failing.
 feat0 <- sim$features; feat0$units <- 0
 fe0 <- withCallingHandlers(td_features(dif, feat0),
