@@ -78,6 +78,6 @@ td_features(dif, sim$features)
 cat(td_report(dif, languages = c("English", "French")))
 ```
 
-With focal groups of 100 or fewer, treat flags as candidates for expert
-review: in the package's validation the false discovery rate exceeded its
-target at those sizes.
+With very small translated-language groups (around 50 candidates), every
+method has little power to detect DIF, so treat flags as candidates for
+expert review rather than conclusions.
