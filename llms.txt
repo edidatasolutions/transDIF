@@ -63,7 +63,7 @@ pak::pak("edidatasolutions/transDIF")
 - **Baselines** for comparison: mean linking, iterative purification,
   Mantel–Haenszel with purification and BH.
 
-## Validation (known truth, 12 replications per size, `inst/validation/known_truth.R`)
+## Validation (known truth, 100 replications per size)
 
 60 items; reference n = 2,000; translated group 0.5 logits lower; ~35%
 of items carry adaptation features that make them mostly harder in
@@ -73,52 +73,60 @@ translation.
 
 | focal n | EB power / FDP | purified z power / FDP | Mantel–Haenszel power / FDP |
 |---------|----------------|------------------------|-----------------------------|
-| 50      | 10% / 19%      | 9% / 3%                | 4% / 8%                     |
-| 100     | 21% / 12%      | 19% / 9%               | 17% / 4%                    |
-| 200     | 63% / 9%       | 59% / 11%              | 43% / 12%                   |
+| 50      | 7.7% / 6.3%    | 6.7% / 8.3%            | 3.9% / 4.8%                 |
+| 100     | 27.8% / 6.0%   | 24.7% / 8.3%           | 17.4% / 5.1%                |
+| 200     | 58.8% / 8.4%   | 55.1% / 10.1%          | 45.7% / 8.6%                |
 
-EB has the most power at every size and meets the FDR target at n = 200.
-At **n ≤ 100 its FDR runs above target** (12–19%), so at those sizes
-treat flags as candidates for expert translation review, not
-conclusions.
+EB has the most power at every size and keeps its false discovery
+proportion below the 10% target. With 50 translated-language candidates,
+no method finds more than a few percent of DIF items, so treat flags
+there as candidates for expert review.
 
 **DIF effect estimation** (RMSE, logits), EB shrinkage vs raw
-differences: 0.26 vs 0.38 (n = 50), 0.20 vs 0.26 (n = 100), 0.16 vs 0.20
-(n = 200). On DIF-free items the error falls by two-thirds or more
-(e.g. 0.11 vs 0.38 at n = 50); genuinely large DIF is shrunk somewhat
-toward the slab mean.
+differences on DIF-free items: 0.105 vs 0.363 (n = 50), 0.092 vs 0.260
+(n = 100), 0.083 vs 0.188 (n = 200). Genuinely large DIF is shrunk
+somewhat toward the slab mean.
 
 **Linking** (true shift 0.5):
 
 | focal n | bias: mode / mean / purified | RMSE: mode / mean / purified |
 |---------|------------------------------|------------------------------|
-| 50      | 0.05 / 0.08 / 0.06           | 0.17 / 0.19 / 0.18           |
-| 100     | 0.03 / 0.06 / 0.04           | 0.08 / 0.12 / 0.08           |
-| 200     | -0.03 / 0.06 / -0.01         | 0.09 / 0.11 / 0.08           |
+| 50      | 0.001 / 0.044 / 0.023        | 0.151 / 0.151 / 0.154        |
+| 100     | 0.013 / 0.071 / 0.030        | 0.112 / 0.132 / 0.115        |
+| 200     | 0.008 / 0.087 / 0.018        | 0.084 / 0.118 / 0.088        |
 
 Mean linking is biased by directional DIF, and more data does not fix
-that. The weighted mode beats it at every size and is roughly tied with
-iterative purification here. In a broader benchmark (180 data sets:
-balanced, directional and heavy DIF at n = 50/100/200;
-`dev/bench_link.R`) it had the lowest overall RMSE of nine estimators
-(0.114, vs 0.119 for purification, 0.137 for mean linking and 0.164 for
-the joint mixture used in earlier development). Its 90% intervals cover
-the true shift 94% of the time.
+that. The weighted mode is essentially unbiased and has the lowest RMSE
+at every size. In a broader benchmark (180 data sets: balanced,
+directional and heavy DIF at n = 50/100/200; `dev/bench_link.R`) it had
+the lowest overall RMSE of nine estimators (0.114, vs 0.119 for
+purification, 0.137 for mean linking and 0.164 for the joint mixture
+used in earlier development). Its 90% intervals cover the true shift
+89–90% of the time.
 
 **Impact:** 90% intervals for the pass-rate change cover the truth in
-92% of replications at n = 150 (true mean change -3.0 points, estimated
--1.9).
+94% of replications at n = 150 (true mean change -3.0 points, estimated
+-2.2).
 
 **Features:** idiom, cultural referent, units and vocabulary effects are
-all recovered (true 0.60 / 0.50 / -0.40 / 0.35; mean estimates 0.62 /
-0.52 / -0.42 / 0.29), with 95% CI coverage of 83–100%.
+all recovered (true 0.60 / 0.50 / -0.40 / 0.35; mean estimates 0.60 /
+0.48 / -0.38 / 0.35), with 95% CI coverage of 92–97%.
+
+**When the linking is not identified.** Linking assumes DIF-free items
+form the largest cluster. On short tests with pervasive DIF this can
+fail: in real cross-national data (14 FIMS mathematics items, Australia
+vs Japan), the linkings disagreed by 0.3 logits and the estimated impact
+of DIF on the pass rate ranged from -8.0 points to -0.6 (interval
+including zero).
+[`td_sensitivity()`](https://edidatasolutions.github.io/transDIF/reference/td_sensitivity.md)
+reports this dependence; see the vignette.
 
 ## Status
 
 Done: `td_simulate`, `td_calibrate`, `td_dif`, `td_mh`, `td_impact`,
-`td_features`, `td_report`. Next: a conservative FDR mode for focal
-groups of 100 or fewer, uniform vs non-uniform DIF (2PL), polytomous
-items, and validation on real French–English data.
+`td_features`, `td_report`, `td_sensitivity` (development version).
+Next: uniform vs non-uniform DIF (2PL), polytomous items, and validation
+on real French–English data.
 
 ## Getting help and contributing
 

@@ -153,6 +153,6 @@ cat(td_report(dif, languages = c("English", "French")))
 #> - Frame decisions using the fairness chapter of the Standards (AERA, APA, NCME, 2014) and the ITC Guidelines for Translating and Adapting Tests (2nd ed., 2017).
 ```
 
-With focal groups of 100 or fewer, treat flags as candidates for expert
-review: in the package’s validation the false discovery rate exceeded
-its target at those sizes.
+With very small translated-language groups (around 50 candidates), every
+method has little power to detect DIF, so treat flags as candidates for
+expert review rather than conclusions.

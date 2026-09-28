@@ -93,7 +93,7 @@
 </ul>
 </div>
 <div class="section level2">
-<h2 id="validation-known-truth-12-replications-per-size-instvalidationknown_truthr">Validation (known truth, 12 replications per size, <code>inst/validation/known_truth.R</code>)<a class="anchor" aria-label="anchor" href="#validation-known-truth-12-replications-per-size-instvalidationknown_truthr"></a>
+<h2 id="validation-known-truth-100-replications-per-size">Validation (known truth, 100 replications per size)<a class="anchor" aria-label="anchor" href="#validation-known-truth-100-replications-per-size"></a>
 </h2>
 <p>60 items; reference n = 2,000; translated group 0.5 logits lower; ~35% of items carry adaptation features that make them mostly harder in translation.</p>
 <p><strong>DIF detection</strong> (items with DIF &gt; 0.2 logits, target FDR 10%):</p>
@@ -113,26 +113,26 @@
 <tbody>
 <tr>
 <td>50</td>
-<td>10% / 19%</td>
-<td>9% / 3%</td>
-<td>4% / 8%</td>
+<td>7.7% / 6.3%</td>
+<td>6.7% / 8.3%</td>
+<td>3.9% / 4.8%</td>
 </tr>
 <tr>
 <td>100</td>
-<td>21% / 12%</td>
-<td>19% / 9%</td>
-<td>17% / 4%</td>
+<td>27.8% / 6.0%</td>
+<td>24.7% / 8.3%</td>
+<td>17.4% / 5.1%</td>
 </tr>
 <tr>
 <td>200</td>
-<td>63% / 9%</td>
-<td>59% / 11%</td>
-<td>43% / 12%</td>
+<td>58.8% / 8.4%</td>
+<td>55.1% / 10.1%</td>
+<td>45.7% / 8.6%</td>
 </tr>
 </tbody>
 </table>
-<p>EB has the most power at every size and meets the FDR target at n = 200. At <strong>n ≤ 100 its FDR runs above target</strong> (12–19%), so at those sizes treat flags as candidates for expert translation review, not conclusions.</p>
-<p><strong>DIF effect estimation</strong> (RMSE, logits), EB shrinkage vs raw differences: 0.26 vs 0.38 (n = 50), 0.20 vs 0.26 (n = 100), 0.16 vs 0.20 (n = 200). On DIF-free items the error falls by two-thirds or more (e.g. 0.11 vs 0.38 at n = 50); genuinely large DIF is shrunk somewhat toward the slab mean.</p>
+<p>EB has the most power at every size and keeps its false discovery proportion below the 10% target. With 50 translated-language candidates, no method finds more than a few percent of DIF items, so treat flags there as candidates for expert review.</p>
+<p><strong>DIF effect estimation</strong> (RMSE, logits), EB shrinkage vs raw differences on DIF-free items: 0.105 vs 0.363 (n = 50), 0.092 vs 0.260 (n = 100), 0.083 vs 0.188 (n = 200). Genuinely large DIF is shrunk somewhat toward the slab mean.</p>
 <p><strong>Linking</strong> (true shift 0.5):</p>
 <table class="table">
 <colgroup>
@@ -148,29 +148,30 @@
 <tbody>
 <tr>
 <td>50</td>
-<td>0.05 / 0.08 / 0.06</td>
-<td>0.17 / 0.19 / 0.18</td>
+<td>0.001 / 0.044 / 0.023</td>
+<td>0.151 / 0.151 / 0.154</td>
 </tr>
 <tr>
 <td>100</td>
-<td>0.03 / 0.06 / 0.04</td>
-<td>0.08 / 0.12 / 0.08</td>
+<td>0.013 / 0.071 / 0.030</td>
+<td>0.112 / 0.132 / 0.115</td>
 </tr>
 <tr>
 <td>200</td>
-<td>-0.03 / 0.06 / -0.01</td>
-<td>0.09 / 0.11 / 0.08</td>
+<td>0.008 / 0.087 / 0.018</td>
+<td>0.084 / 0.118 / 0.088</td>
 </tr>
 </tbody>
 </table>
-<p>Mean linking is biased by directional DIF, and more data does not fix that. The weighted mode beats it at every size and is roughly tied with iterative purification here. In a broader benchmark (180 data sets: balanced, directional and heavy DIF at n = 50/100/200; <code>dev/bench_link.R</code>) it had the lowest overall RMSE of nine estimators (0.114, vs 0.119 for purification, 0.137 for mean linking and 0.164 for the joint mixture used in earlier development). Its 90% intervals cover the true shift 94% of the time.</p>
-<p><strong>Impact:</strong> 90% intervals for the pass-rate change cover the truth in 92% of replications at n = 150 (true mean change -3.0 points, estimated -1.9).</p>
-<p><strong>Features:</strong> idiom, cultural referent, units and vocabulary effects are all recovered (true 0.60 / 0.50 / -0.40 / 0.35; mean estimates 0.62 / 0.52 / -0.42 / 0.29), with 95% CI coverage of 83–100%.</p>
+<p>Mean linking is biased by directional DIF, and more data does not fix that. The weighted mode is essentially unbiased and has the lowest RMSE at every size. In a broader benchmark (180 data sets: balanced, directional and heavy DIF at n = 50/100/200; <code>dev/bench_link.R</code>) it had the lowest overall RMSE of nine estimators (0.114, vs 0.119 for purification, 0.137 for mean linking and 0.164 for the joint mixture used in earlier development). Its 90% intervals cover the true shift 89–90% of the time.</p>
+<p><strong>Impact:</strong> 90% intervals for the pass-rate change cover the truth in 94% of replications at n = 150 (true mean change -3.0 points, estimated -2.2).</p>
+<p><strong>Features:</strong> idiom, cultural referent, units and vocabulary effects are all recovered (true 0.60 / 0.50 / -0.40 / 0.35; mean estimates 0.60 / 0.48 / -0.38 / 0.35), with 95% CI coverage of 92–97%.</p>
+<p><strong>When the linking is not identified.</strong> Linking assumes DIF-free items form the largest cluster. On short tests with pervasive DIF this can fail: in real cross-national data (14 FIMS mathematics items, Australia vs Japan), the linkings disagreed by 0.3 logits and the estimated impact of DIF on the pass rate ranged from -8.0 points to -0.6 (interval including zero). <code><a href="reference/td_sensitivity.html">td_sensitivity()</a></code> reports this dependence; see the vignette.</p>
 </div>
 <div class="section level2">
 <h2 id="status">Status<a class="anchor" aria-label="anchor" href="#status"></a>
 </h2>
-<p>Done: <code>td_simulate</code>, <code>td_calibrate</code>, <code>td_dif</code>, <code>td_mh</code>, <code>td_impact</code>, <code>td_features</code>, <code>td_report</code>. Next: a conservative FDR mode for focal groups of 100 or fewer, uniform vs non-uniform DIF (2PL), polytomous items, and validation on real French–English data.</p>
+<p>Done: <code>td_simulate</code>, <code>td_calibrate</code>, <code>td_dif</code>, <code>td_mh</code>, <code>td_impact</code>, <code>td_features</code>, <code>td_report</code>, <code>td_sensitivity</code> (development version). Next: uniform vs non-uniform DIF (2PL), polytomous items, and validation on real French–English data.</p>
 </div>
 <div class="section level2">
 <h2 id="getting-help-and-contributing">Getting help and contributing<a class="anchor" aria-label="anchor" href="#getting-help-and-contributing"></a>
