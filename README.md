@@ -1,5 +1,7 @@
 # transDIF
 
+[![CRAN status](https://www.r-pkg.org/badges/version/transDIF)](https://CRAN.R-project.org/package=transDIF)
+
 **Does a score mean the same thing in both languages?**
 
 A comparability workflow for translated and adapted exams, built for the
@@ -20,7 +22,7 @@ cat(td_report(dif, imp, fea, c("English", "French")))
 
 ## Installation
 
-From CRAN (once released):
+From CRAN:
 
 ```r
 install.packages("transDIF")
