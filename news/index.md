@@ -20,6 +20,8 @@
 
 ## transDIF 0.1.0
 
+CRAN release: 2026-10-08
+
 - Initial release.
 - Per-group Rasch calibration with relative standard errors
   ([`td_calibrate()`](https://edidatasolutions.github.io/transDIF/reference/td_calibrate.md)).
