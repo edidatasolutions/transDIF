@@ -127,7 +127,8 @@ many items show DIF, the data may not settle which items are DIF-free.
 assumption, how stable the mode is, and which items’ DIF verdicts depend
 on the choice:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/td_sensitivity.html">td_sensitivity</a></span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">24</span>, B <span class="op">=</span> <span class="fl">100</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sens</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_sensitivity.html">td_sensitivity</a></span><span class="op">(</span><span class="va">dif</span>, cut <span class="op">=</span> <span class="fl">24</span>, B <span class="op">=</span> <span class="fl">100</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">sens</span></span>
 <span><span class="co">#&gt; &lt;td_sensitivity&gt; verdict: SENSITIVE (tolerance 0.15 logits)</span></span>
 <span><span class="co">#&gt; Linkings differ by up to 0.144 logits; 77% of 100 bootstrap modes fall within 0.15 of the estimate (90% interval 0.369 to 0.753)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -148,14 +149,141 @@ on the choice:</p>
 <span><span class="co">#&gt;   Q30 1.039      TRUE          TRUE          FALSE              TRUE</span></span>
 <span><span class="co">#&gt;   Q31 1.134      TRUE          TRUE          FALSE              TRUE</span></span>
 <span><span class="co">#&gt;   Q36 1.044      TRUE          TRUE          FALSE              TRUE</span></span></code></pre></div>
-<p>A “sensitive” verdict does not say which linking is right. It says
-that a conclusion depends on an assumption the data cannot check, so
-report the alternatives and send the listed items to expert review.</p>
+<p>The report has three parts:</p>
+<ul>
+<li>
+<strong>Linkings.</strong> The ability difference, the number of
+flagged items and the pass-rate impact under three assumptions: the
+densest cluster of items is DIF-free (mode), flagged items are removed
+until the rest agree (purification), and DIF cancels out over all items
+(mean).</li>
+<li>
+<strong>Stability of the mode.</strong> A parametric bootstrap
+redraws each item’s between-language difference and re-estimates the
+mode. The share of bootstrap modes within the tolerance (0.15 logits by
+default) of the estimate shows whether the densest cluster is clear or
+whether a slightly different sample would have picked another
+cluster.</li>
+<li>
+<strong>Linking-sensitive items.</strong> Items whose DIF flag
+changes from one linking to another.</li>
+</ul>
+<p>The verdict is “robust” only when the linkings agree within the
+tolerance <em>and</em> the mode is stable (at least 80% of bootstrap
+modes within the tolerance). Here the linkings agree closely, but with
+150 candidates the mode is not yet stable enough, so the verdict is
+“sensitive”. Each part is available for reporting:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sens</span><span class="op">$</span><span class="va">linkings</span></span>
+<span><span class="co">#&gt;   assumption     shift focal_mean         se n_flagged pass_rate_change</span></span>
+<span><span class="co">#&gt; 1       mode 0.4791316 -0.4791316 0.11628014         9     -0.035792775</span></span>
+<span><span class="co">#&gt; 2   purified 0.5186765 -0.5186765 0.09639721         8     -0.029034229</span></span>
+<span><span class="co">#&gt; 3  all_items 0.6228016 -0.6228016 0.09491372         3     -0.004585517</span></span>
+<span><span class="co">#&gt;   change_lower change_upper</span></span>
+<span><span class="co">#&gt; 1  -0.06461305  -0.01880747</span></span>
+<span><span class="co">#&gt; 2  -0.04909186  -0.01516744</span></span>
+<span><span class="co">#&gt; 3  -0.01968962   0.01554250</span></span>
+<span><span class="va">sens</span><span class="op">$</span><span class="va">bootstrap</span></span>
+<span><span class="co">#&gt;           sd        lower        upper share_within </span></span>
+<span><span class="co">#&gt;    0.1178181    0.3686549    0.7534359    0.7700000</span></span>
+<span><span class="va">sens</span><span class="op">$</span><span class="va">items</span><span class="op">[</span><span class="va">sens</span><span class="op">$</span><span class="va">items</span><span class="op">$</span><span class="va">linking_sensitive</span>, <span class="op">]</span></span>
+<span><span class="co">#&gt;    item         d flag_mode flag_purified flag_all_items linking_sensitive</span></span>
+<span><span class="co">#&gt; 3   Q03 0.9792888      TRUE          TRUE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt; 15  Q15 1.1255601      TRUE          TRUE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt; 29  Q29 0.8751295      TRUE         FALSE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt; 30  Q30 1.0387857      TRUE          TRUE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt; 31  Q31 1.1338645      TRUE          TRUE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt; 36  Q36 1.0436927      TRUE          TRUE          FALSE              TRUE</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="two-contrasting-cases">Two contrasting cases<a class="anchor" aria-label="anchor" href="#two-contrasting-cases"></a>
+</h3>
+<p>With a larger translated-language group, the same 40-item design
+gives a clear answer: the linkings agree and the mode barely moves under
+resampling.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">big</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">1000</span>, n_focal <span class="op">=</span> <span class="fl">400</span>, n_items <span class="op">=</span> <span class="fl">40</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">dif_big</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_dif.html">td_dif</a></span><span class="op">(</span><span class="fu"><a href="../reference/td_calibrate.html">td_calibrate</a></span><span class="op">(</span><span class="va">big</span><span class="op">$</span><span class="va">responses</span>, <span class="va">big</span><span class="op">$</span><span class="va">group</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/td_sensitivity.html">td_sensitivity</a></span><span class="op">(</span><span class="va">dif_big</span>, cut <span class="op">=</span> <span class="fl">24</span>, B <span class="op">=</span> <span class="fl">100</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;td_sensitivity&gt; verdict: ROBUST (tolerance 0.15 logits)</span></span>
+<span><span class="co">#&gt; Linkings differ by up to 0.059 logits; 98% of 100 bootstrap modes fall within 0.15 of the estimate (90% interval 0.307 to 0.521)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  assumption shift focal_mean     se n_flagged pass_rate_change change_lower</span></span>
+<span><span class="co">#&gt;        mode 0.400     -0.400 0.0829         8         -0.02215      -0.0487</span></span>
+<span><span class="co">#&gt;    purified 0.400     -0.400 0.0692         8         -0.02202      -0.0455</span></span>
+<span><span class="co">#&gt;   all_items 0.459     -0.459 0.0682         9         -0.00727      -0.0238</span></span>
+<span><span class="co">#&gt;  change_upper</span></span>
+<span><span class="co">#&gt;       0.00168</span></span>
+<span><span class="co">#&gt;      -0.00130</span></span>
+<span><span class="co">#&gt;       0.02257</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 3 linking-sensitive item(s):</span></span>
+<span><span class="co">#&gt;  item     d flag_mode flag_purified flag_all_items linking_sensitive</span></span>
+<span><span class="co">#&gt;   Q01 0.723      TRUE          TRUE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt;   Q25 0.108     FALSE         FALSE           TRUE              TRUE</span></span>
+<span><span class="co">#&gt;   Q29 0.151     FALSE         FALSE           TRUE              TRUE</span></span></code></pre></div>
+<p>Even a robust verdict can list a few linking-sensitive items: they
+sit near the flagging boundary, so a small shift in the linking moves
+them across it. They deserve review, but the overall conclusion does not
+depend on them.</p>
+<p>A short test with pervasive DIF and a small group is the opposite
+case. No cluster of DIF-free items dominates, the linkings disagree, and
+the mode jumps between clusters under resampling:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heavy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>idiom <span class="op">=</span> <span class="fl">0.18</span>, cultural <span class="op">=</span> <span class="fl">0.18</span>, units <span class="op">=</span> <span class="fl">0.10</span>, vocabulary <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<span><span class="va">short</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/td_simulate.html">td_simulate</a></span><span class="op">(</span>n_ref <span class="op">=</span> <span class="fl">1000</span>, n_focal <span class="op">=</span> <span class="fl">80</span>, n_items <span class="op">=</span> <span class="fl">16</span>,</span>
+<span>                     feature_prev <span class="op">=</span> <span class="va">heavy</span>, seed <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">dif_short</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="../reference/td_dif.html">td_dif</a></span><span class="op">(</span><span class="fu"><a href="../reference/td_calibrate.html">td_calibrate</a></span><span class="op">(</span><span class="va">short</span><span class="op">$</span><span class="va">responses</span>, <span class="va">short</span><span class="op">$</span><span class="va">group</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/td_sensitivity.html">td_sensitivity</a></span><span class="op">(</span><span class="va">dif_short</span>, cut <span class="op">=</span> <span class="fl">10</span>, B <span class="op">=</span> <span class="fl">100</span>, n_draws <span class="op">=</span> <span class="fl">50</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;td_sensitivity&gt; verdict: SENSITIVE (tolerance 0.15 logits)</span></span>
+<span><span class="co">#&gt; Linkings differ by up to 0.201 logits; 50% of 100 bootstrap modes fall within 0.15 of the estimate (90% interval 0.335 to 0.939)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  assumption shift focal_mean    se n_flagged pass_rate_change change_lower</span></span>
+<span><span class="co">#&gt;        mode 0.796     -0.796 0.146         4          0.03610      0.02252</span></span>
+<span><span class="co">#&gt;    purified 0.683     -0.683 0.143         1          0.02410      0.00119</span></span>
+<span><span class="co">#&gt;   all_items 0.595     -0.595 0.140         0          0.00105     -0.03013</span></span>
+<span><span class="co">#&gt;  change_upper</span></span>
+<span><span class="co">#&gt;        0.0526</span></span>
+<span><span class="co">#&gt;        0.0373</span></span>
+<span><span class="co">#&gt;        0.0202</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 4 linking-sensitive item(s):</span></span>
+<span><span class="co">#&gt;  item       d flag_mode flag_purified flag_all_items linking_sensitive</span></span>
+<span><span class="co">#&gt;   Q01  0.2610      TRUE         FALSE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt;   Q06  0.0914      TRUE         FALSE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt;   Q10  0.2123      TRUE         FALSE          FALSE              TRUE</span></span>
+<span><span class="co">#&gt;   Q13 -0.0958      TRUE          TRUE          FALSE              TRUE</span></span></code></pre></div>
+<p>Here the conclusion itself changes with the assumption: the estimated
+effect of DIF on the pass rate is +3.6 points under the mode, +2.4 under
+purification and essentially zero under mean linking, whose interval
+includes zero.</p>
+</div>
+<div class="section level3">
+<h3 id="reading-the-verdict">Reading the verdict<a class="anchor" aria-label="anchor" href="#reading-the-verdict"></a>
+</h3>
+<p>A “sensitive” verdict does not say which linking is right, and it
+does not mean the mode is wrong. It says that a conclusion depends on an
+assumption the data cannot check. In the package’s simulations,
+“sensitive” verdicts were concentrated in the hardest designs (short
+tests, small groups, pervasive DIF), where linking errors are larger for
+every method; within a given design, the verdict did not tell more
+accurate estimates from less accurate ones. In practice:</p>
+<ol style="list-style-type: decimal">
+<li>When the verdict is robust, report the mode-based results.</li>
+<li>When it is sensitive, report the results under all three linkings,
+say which conclusions change, and do not present a single pass-rate
+impact as settled.</li>
+<li>In either case, send the linking-sensitive items to content and
+translation experts. Only their review can settle which items should
+anchor the scale.</li>
+</ol>
+<p>The report can be included in the comparability report with
+<code>td_report(dif, ..., sensitivity = sens)</code>.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="what-should-translators-look-at">What should translators look at?<a class="anchor" aria-label="anchor" href="#what-should-translators-look-at"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/td_features.html">td_features</a></span><span class="op">(</span><span class="va">dif</span>, <span class="va">sim</span><span class="op">$</span><span class="va">features</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          term    estimate         se          z      p_value</span></span>
 <span><span class="co">#&gt; 1 (Intercept)  0.02073289 0.03984978  0.5202762 6.028711e-01</span></span>
@@ -167,7 +295,7 @@ report the alternatives and send the listed items to expert review.</p>
 <div class="section level2">
 <h2 id="a-report-to-start-from">A report to start from<a class="anchor" aria-label="anchor" href="#a-report-to-start-from"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/td_report.html">td_report</a></span><span class="op">(</span><span class="va">dif</span>, languages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"English"</span>, <span class="st">"French"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # Score comparability: English vs French forms</span></span>
 <span><span class="co">#&gt; </span></span>
