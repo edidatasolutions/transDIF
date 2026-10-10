@@ -24,14 +24,17 @@
 #'
 #' **What the verdict means.** It is a statement about *dependence on an
 #' untestable assumption*, not an estimate of which linking is correct. In the
-#' package's known-truth simulations, data sets judged "sensitive" did not
-#' have larger linking errors for the mode than those judged "robust".
-#' Disagreement between linkings arose mostly because mean and purified
-#' linking are biased under heavy directional DIF. Bootstrap instability was
-#' only weakly associated with error. Use the verdict to decide when to report
-#' results under several assumptions and to send the linking-sensitive items
-#' to content and translation experts; only that review can settle which
-#' items should anchor the scale.
+#' package's known-truth simulations, "sensitive" verdicts were concentrated
+#' in the hardest designs (short tests, small translated-language groups,
+#' pervasive DIF), where linking errors are larger for every method; within a
+#' given design, the verdict did not separate more accurate estimates from
+#' less accurate ones. Disagreement between linkings arose mostly because mean
+#' and purified linking are biased under heavy directional DIF. Use the
+#' verdict to decide when to report results under several assumptions and to
+#' send the linking-sensitive items to content and translation experts; only
+#' that review can settle which items should anchor the scale. Items near the
+#' flagging boundary can be linking-sensitive even when the verdict is
+#' robust.
 #'
 #' @param dif A `td_dif` object (from [td_dif()]).
 #' @param cut Optional raw-score passing standard for pass-rate impact.
